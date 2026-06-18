@@ -100,6 +100,26 @@ body {
   100% { transform: translate(0, 0); }
 }
 
+/* ═══════════════════════════════════════════════
+   INTRO SEQUENCE — Glitch bar transition effect
+   Used during REVEAL phase wipe
+   ═══════════════════════════════════════════════ */
+@keyframes introGlitchBar {
+  0%   { transform: scaleX(0) translateX(-20%); opacity: 0.8; }
+  40%  { transform: scaleX(1.15) translateX(2%);  opacity: 0.6; }
+  70%  { transform: scaleX(0.3) translateX(40%);  opacity: 0.3; }
+  100% { transform: scaleX(0) translateX(100%);   opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════
+   INTRO SEQUENCE — Reduced motion fade-in
+   Simple text reveal for prefers-reduced-motion
+   ═══════════════════════════════════════════════ */
+@keyframes introFadeIn {
+  0%   { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
 html {
   scroll-behavior: smooth;
 }

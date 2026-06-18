@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { IntroSequence } from './components/IntroSequence';
 import { Hero } from './components/Hero';
 import { Profile } from './components/Profile';
 import { TechMatrix } from './components/TechMatrix';
@@ -16,7 +17,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0F1115] text-[#E0E2E5] font-sans selection:bg-[#3B82F6]/30 selection:text-white">
+    <IntroSequence>
+      <div className="min-h-screen bg-[#0F1115] text-[#E0E2E5] font-sans selection:bg-[#3B82F6]/30 selection:text-white">
       <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-4 pb-12 space-y-12 lg:space-y-16">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#1F2937] pb-4 gap-4">
           <div className="font-mono text-[11px] text-[#8B949E] flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
@@ -60,5 +62,6 @@ export default function App() {
         </div>
       </div>
     </div>
+    </IntroSequence>
   );
 }
