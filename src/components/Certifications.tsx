@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Download, FileText, Award, X, ChevronLeft, ChevronRight, ExternalLink, ZoomIn } from 'lucide-react';
 import { certifications, cvData } from '../data/certifications';
@@ -9,12 +9,16 @@ import cert1 from '../assets/sertifikat/Sertifikat Pelatihan Pemograman Web.pdf'
 import cert2 from '../assets/sertifikat/Sertifikat Penghargaan Penyelesaian Kursus (Database Design) Oracle.pdf';
 import cert3 from '../assets/sertifikat/Sertifikat Penghargaan Penyelesaian Kursus (Database Foundations) Oracle.pdf';
 import cert4 from '../assets/sertifikat/Sertifikat-JagoSpeaking-B1_Pre-Intermediate-(Kampung Ingris Pare-Interpiece Course).pdf';
+import cert5 from '../assets/sertifikat/Sertifikat_HIMTI.pdf';
+import cert6 from '../assets/sertifikat/Sertifikat_Internet Of Things (IoT).pdf';
 
 const certFiles: Record<string, string> = {
   'CERT-001': cert1,
   'CERT-002': cert2,
   'CERT-003': cert3,
   'CERT-004': cert4,
+  'CERT-005': cert5,
+  'CERT-006': cert6,
 };
 
 /**
@@ -81,10 +85,10 @@ export function Certifications() {
 
   return (
     <>
-      <section className="space-y-8">
+      <section className="space-y-6 pt-4">
         <div className="flex items-center gap-4 border-b border-[#1F2937] pb-3">
-          <span className="font-mono text-[10px] text-[#3B82F6]">03 //</span>
-          <h2 className="text-xs sm:text-sm font-bold text-[#E0E2E5] font-mono tracking-widest uppercase">Cert_Archive</h2>
+          <span className="font-mono text-[10px] text-[#06B6D4]">06 //</span>
+          <h2 className="text-xs sm:text-sm font-bold text-[#F9FAFB] font-mono tracking-widest uppercase">Certifications</h2>
         </div>
 
         {/* CV Download — Primary Action */}
@@ -125,9 +129,16 @@ export function Certifications() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
+              whileHover={{ y: -4, boxShadow: `0 10px 30px -10px ${categoryColors[cert.category]}40` }}
               onClick={() => handleCardClick(idx)}
-              className="group relative border border-[#1F2937] bg-[#161B22]/50 p-4 rounded-sm hover:border-[#3B82F6]/40 transition-all duration-300 cursor-pointer hover:bg-[#161B22]/80 hover:shadow-[0_0_20px_rgba(59,130,246,0.07)]"
+              className="group relative border border-[#1F2937] bg-[#161B22]/50 p-4 rounded-sm hover:border-transparent transition-all duration-300 cursor-pointer hover:bg-[#161B22]/80"
+              style={{
+                '--hover-color': categoryColors[cert.category]
+              } as React.CSSProperties}
             >
+              {/* Dynamic border gradient on hover */}
+              <div className="absolute inset-0 rounded-sm bg-gradient-to-br from-[var(--hover-color)]/0 via-[var(--hover-color)]/0 to-[var(--hover-color)]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute inset-[-1px] rounded-sm bg-gradient-to-b from-[var(--hover-color)]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
               {/* Click hint */}
               <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <div className="flex items-center gap-1 font-mono text-[8px] text-[#3B82F6]/60 uppercase tracking-wider">
@@ -159,12 +170,12 @@ export function Certifications() {
                 </div>
               </div>
 
-              {/* Bottom shimmer line on hover */}
+              {/* Bottom shimmer line on hover - dynamically colored */}
               <motion.div
-                className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#3B82F6]/50 to-transparent rounded-full"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
+                className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--hover-color)] to-transparent rounded-full"
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileHover={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 0.4 }}
                 style={{ width: '100%', originX: 0.5 }}
               />
             </motion.div>

@@ -10,10 +10,9 @@ export interface TechCategory {
 }
 
 export const techCategories: TechCategory[] = [
-  { id: 'backend', title: 'CORE_BACKEND', items: ['Python', 'Node.js', 'Express', 'Flask', 'CodeIgniter'] },
-  { id: 'frontend', title: 'CORE_FRONTEND', items: ['React', 'TypeScript', 'Vite', 'Tailwind'] },
-  { id: 'mobile', title: 'MOBILE_DEV', items: ['React Native', 'Expo'] },
-  { id: 'ai', title: 'AI_DATA', items: ['YOLOv8', 'OpenCV', 'Pandas', 'Automation'] },
-  { id: 'database', title: 'DATABASE_SYS', items: ['MySQL', 'MariaDB', 'Supabase'] },
-  { id: 'infra', title: 'INFRA_TOOLS', items: ['Git/GitHub', 'Linux', 'LAN Routing', 'MT5'] },
+  { id: 'frontend', title: 'Frontend', items: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Framer Motion'] },
+  { id: 'backend', title: 'Backend', items: ['Python', 'Node.js', 'Express', 'Flask', 'REST APIs'] },
+  { id: 'database', title: 'Database', items: ['MySQL', 'MariaDB', 'Supabase', 'PostgreSQL'] },
+  { id: 'ai', title: 'AI & Automation', items: ['LLM Integration', 'YOLOv8', 'OpenCV', 'Pandas'] },
+  { id: 'tools', title: 'Tools & Infra', items: ['Git/GitHub', 'Linux', 'MetaTrader 5', 'Cloudflare Workers'] },
 ];

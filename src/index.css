@@ -7,7 +7,7 @@
 }
 
 body {
-  @apply bg-[#0F1115] text-[#E0E2E5] font-sans selection:bg-[#3B82F6]/30 selection:text-white;
+  @apply bg-[#0B0F19] text-[#F9FAFB] font-sans selection:bg-[#06B6D4]/30 selection:text-white;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -24,80 +24,21 @@ body {
 }
 
 /* ═══════════════════════════════════════════════
-   SLOW FLICKER — broken lamp / short-circuit effect
-   Irregular timing with dead moments for cinematic feel.
-   Used on the hero section light reveal layer.
-   ═══════════════════════════════════════════════ */
-@keyframes slowFlicker {
-  0%   { opacity: 0.03; }
-  8%   { opacity: 0.06; }
-  12%  { opacity: 0.03; }    /* dead */
-  30%  { opacity: 0.03; }    /* long dead — lamp stays off */
-  31%  { opacity: 0.25; }    /* sudden spike */
-  33%  { opacity: 0.08; }    /* quick die */
-  34%  { opacity: 0.18; }    /* bounce back */
-  36%  { opacity: 0.03; }    /* dead again */
-  55%  { opacity: 0.03; }    /* long silence */
-  56%  { opacity: 0.40; }    /* brightest flash */
-  57%  { opacity: 0.15; }
-  58%  { opacity: 0.30; }    /* double-tap flicker */
-  60%  { opacity: 0.03; }
-  85%  { opacity: 0.05; }
-  90%  { opacity: 0.12; }    /* faint glow */
-  93%  { opacity: 0.03; }
-  100% { opacity: 0.03; }
-}
-
-/* ═══════════════════════════════════════════════
-   GLOW PULSE — independent soft pulsation for the light source
-   Runs on a different cycle than flicker for organic feel.
+   GLOW PULSE — soft ambient pulse for modern feel
    ═══════════════════════════════════════════════ */
 @keyframes glowPulse {
   0%   { opacity: 0.15; transform: scale(1); }
-  20%  { opacity: 0.25; transform: scale(1.05); }
-  40%  { opacity: 0.10; transform: scale(0.98); }
-  60%  { opacity: 0.30; transform: scale(1.08); }
-  80%  { opacity: 0.12; transform: scale(1); }
+  50%  { opacity: 0.25; transform: scale(1.05); }
   100% { opacity: 0.15; transform: scale(1); }
 }
 
 /* ═══════════════════════════════════════════════
    HAZE PULSE — atmospheric fog breathing effect
-   Very slow and subtle, creates depth perception.
    ═══════════════════════════════════════════════ */
 @keyframes hazePulse {
-  0%   { opacity: 0.03; }
-  50%  { opacity: 0.08; }
-  100% { opacity: 0.03; }
-}
-
-/* ═══════════════════════════════════════════════
-   DUST FLOAT — floating dust particles
-   Slow vertical drift for atmospheric detail.
-   ═══════════════════════════════════════════════ */
-@keyframes dustFloat {
-  0%   { transform: translateY(0) translateX(0); opacity: 0; }
-  10%  { opacity: 0.6; }
-  90%  { opacity: 0.6; }
-  100% { transform: translateY(-80px) translateX(20px); opacity: 0; }
-}
-
-/* ═══════════════════════════════════════════════
-   NOISE GRAIN — film grain texture overlay
-   Creates cinematic texture on the hero background.
-   ═══════════════════════════════════════════════ */
-@keyframes noiseShift {
-  0%   { transform: translate(0, 0); }
-  10%  { transform: translate(-5%, -5%); }
-  20%  { transform: translate(5%, 10%); }
-  30%  { transform: translate(-10%, 5%); }
-  40%  { transform: translate(10%, -5%); }
-  50%  { transform: translate(-5%, 10%); }
-  60%  { transform: translate(10%, 5%); }
-  70%  { transform: translate(-5%, -10%); }
-  80%  { transform: translate(5%, 5%); }
-  90%  { transform: translate(-10%, -5%); }
-  100% { transform: translate(0, 0); }
+  0%   { opacity: 0.05; }
+  50%  { opacity: 0.10; }
+  100% { opacity: 0.05; }
 }
 
 /* ═══════════════════════════════════════════════

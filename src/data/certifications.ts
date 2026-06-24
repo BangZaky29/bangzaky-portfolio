@@ -45,6 +45,20 @@ export const certifications: Certification[] = [
     category: 'language',
     fileName: 'Sertifikat-JagoSpeaking-B1_Pre-Intermediate-(Kampung Ingris Pare-Interpiece Course).pdf',
   },
+  {
+    id: 'CERT-005',
+    title: 'Pengurus Himpunan Mahasiswa Teknik Informatika (HIMTI)',
+    issuer: 'Universitas',
+    category: 'technical',
+    fileName: 'Sertifikat_HIMTI.pdf',
+  },
+  {
+    id: 'CERT-006',
+    title: 'Internet Of Things (IoT) Training',
+    issuer: 'Digital Talent Scholarship',
+    category: 'technical',
+    fileName: 'Sertifikat_Internet Of Things (IoT).pdf',
+  },
 ];
 
 export const cvData: CVData = {

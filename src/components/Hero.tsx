@@ -1,20 +1,11 @@
 import { motion } from 'motion/react';
-import { Terminal } from 'lucide-react';
-import darkLabBg from '../assets/images/dark_lab_interior_1781777423739.jpg';
+import { Terminal, Download, ArrowRight } from 'lucide-react';
+import { cvData } from '../data/certifications';
+import cvFile from '../assets/myCV/My-CV.pdf';
 
 /**
- * Hero Section — Dark Cinematic Background
- * 
- * Multi-layer architecture (bottom → top):
- * L0: Pitch-black base (#050507)
- * L1: Static room image — ultra-low opacity, blurred, desaturated
- * L2: Flickering light reveal — animated opacity with localized glow
- * L3: Atmospheric haze — radial gradient fog
- * L4: Vignette — heavy edge darkening
- * L5: Text protection overlay — gradient from solid dark to transparent
- * L6: Dust particles — CSS floating specks
- * L7: Scanlines — subtle CRT texture
- * L8: Film grain noise — animated texture overlay
+ * Hero Section — Elegant Tech Background
+ * Minimalist dark navy with subtle cyan ambient glows
  */
 export function Hero() {
   return (
@@ -25,70 +16,21 @@ export function Hero() {
       className="space-y-6 relative rounded-sm overflow-hidden p-6 sm:p-10 -mx-6 sm:-mx-10 border border-[#1F2937]/30"
     >
       {/* ══════════════════════════════════════════
-          BACKGROUND AMBIENCE SYSTEM
+          BACKGROUND AMBIENCE SYSTEM (CLEAN)
           ══════════════════════════════════════════ */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none bg-[#050507]">
+      <div className="absolute inset-0 z-0 pointer-events-none select-none bg-[#0B0F19]">
         
-        {/* L1: Static Base Room — nearly invisible, sets depth */}
-        <img 
-          src={darkLabBg} 
-          alt="" 
-          className="absolute inset-0 w-full h-full object-cover blur-[6px] opacity-[0.07] grayscale" 
-          referrerPolicy="no-referrer"
-          loading="eager"
-        />
+        {/* Subtle top-right cyan glow */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#06B6D4]/5 blur-[120px] rounded-full mix-blend-screen animate-[glowPulse_8s_infinite]"></div>
         
-        {/* L2: Flickering Light Reveal — lamp short-circuit effect */}
-        <div className="absolute inset-0 z-10 animate-[slowFlicker_12s_infinite] mix-blend-screen">
-          {/* Light source glow point — positioned at upper-right matching the lamp in image */}
-          <div className="absolute top-[15%] right-[25%] w-[350px] h-[350px] bg-gradient-to-br from-transparent via-[#C8E0FF]/8 to-transparent blur-[80px] animate-[glowPulse_8s_infinite]"></div>
-          
-          {/* Room reveal during flash — the image becomes briefly visible */}
-          <img 
-            src={darkLabBg} 
-            alt="" 
-            className="absolute inset-0 w-full h-full object-cover blur-[3px] opacity-[0.18] mix-blend-plus-lighter" 
-            referrerPolicy="no-referrer"
-            loading="eager"
-          />
-        </div>
+        {/* Subtle bottom-left deep blue glow */}
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#3B82F6]/5 blur-[100px] rounded-full mix-blend-screen"></div>
 
-        {/* L3: Atmospheric Haze — breathing fog layer */}
-        <div className="absolute inset-0 z-15 animate-[hazePulse_15s_ease-in-out_infinite]">
-          <div className="absolute top-[10%] right-[20%] w-[500px] h-[300px] bg-gradient-to-b from-[#2A3A4A]/10 via-[#1A2535]/5 to-transparent blur-[60px] rounded-full"></div>
-        </div>
+        {/* Minimal grid pattern */}
+        <div className="absolute inset-0 z-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDAuNWg0ME0wIDQwLjVoNDBNMC41IDB2NDBNNDAuNSAwdjQwIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')] opacity-50"></div>
 
-        {/* L4: Vignette — deep edge darkening, creates depth */}
-        <div className="absolute inset-0 z-20 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(5,5,7,0.4)_50%,#050507_90%)]"></div>
-
-        {/* L5: Text Protection Overlay — strong left-side darkening for readability */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#0F1115] via-[#0F1115]/92 sm:via-[#0F1115]/80 to-[#0F1115]/50"></div>
-        
-        {/* Additional top/bottom shadow falloff */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-b from-[#050507]/60 via-transparent to-[#050507]/70"></div>
-        
-        {/* L6: Dust Particles — floating atmospheric detail */}
-        <div className="absolute inset-0 z-25 overflow-hidden">
-          <div className="absolute top-[60%] right-[35%] w-[2px] h-[2px] bg-white/20 rounded-full animate-[dustFloat_8s_infinite_1s]"></div>
-          <div className="absolute top-[40%] right-[50%] w-[1.5px] h-[1.5px] bg-white/15 rounded-full animate-[dustFloat_12s_infinite_3s]"></div>
-          <div className="absolute top-[70%] right-[20%] w-[1px] h-[1px] bg-white/25 rounded-full animate-[dustFloat_10s_infinite_5s]"></div>
-          <div className="absolute top-[55%] right-[65%] w-[1.5px] h-[1.5px] bg-white/10 rounded-full animate-[dustFloat_14s_infinite_7s]"></div>
-        </div>
-
-        {/* L7: Scanlines — subtle CRT texture for projected text feel */}
-        <div className="absolute inset-0 z-25 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCIvPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIi8+Cjwvc3ZnPg==')] opacity-40"></div>
-
-        {/* L8: Film Grain Noise — animated fine texture */}
-        <div 
-          className="absolute inset-0 z-25 opacity-[0.04] mix-blend-overlay animate-[noiseShift_0.5s_steps(3)_infinite]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-            backgroundSize: '128px 128px',
-          }}
-        ></div>
-
-        {/* Inset shadow for room depth feeling */}
-        <div className="absolute inset-0 z-25 shadow-[inset_0_0_80px_rgba(0,0,0,0.6)]"></div>
+        {/* Edge fade */}
+        <div className="absolute inset-0 z-20 bg-[radial-gradient(ellipse_at_center,transparent_20%,#0B0F19_100%)]"></div>
       </div>
 
       {/* ══════════════════════════════════════════
@@ -96,43 +38,58 @@ export function Hero() {
           ══════════════════════════════════════════ */}
       
       {/* Terminal tag */}
-      <div className="relative z-30 font-mono text-[11px] text-[#8B949E] flex items-center gap-2 uppercase tracking-widest mb-4">
+      <div className="relative z-30 font-mono text-[11px] text-[#06B6D4] flex items-center gap-2 uppercase tracking-widest mb-4">
         <Terminal size={14} />
-        Initialize Profile
+        Zaky Aulia Qolbi
       </div>
 
       {/* Heading */}
       <div className="relative z-30 space-y-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#E0E2E5] leading-snug">
-          Engineering digital solutions <br className="hidden md:block" />
-          with code-driven automation.
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#F9FAFB] leading-[1.1]">
+          Building Smart Digital Systems <br className="hidden md:block" />
+          with Code & AI.
         </h1>
-        <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] sm:text-[11px] text-[#8B949E] uppercase tracking-wider pt-2">
-          <span className="text-[#10B981]">&gt; role:</span> Python Developer
-          <span className="text-[#30363D]">/</span>
-          AI Automation
-          <span className="text-[#30363D]">/</span>
-          System Architect
+        <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] sm:text-[11px] text-[#9CA3AF] uppercase tracking-wider pt-2">
+          <span className="text-[#06B6D4] font-bold">Full-Stack Developer</span>
+          <span className="text-[#30363D]">•</span>
+          <span className="text-[#F9FAFB]">AI Automation Engineer</span>
         </div>
       </div>
 
       {/* Description */}
-      <div className="relative z-30 pl-4 border-l-2 border-[#3B82F6]/30">
-        <p className="max-w-xl text-sm sm:text-[15px] text-[#8B949E] leading-relaxed">
-          Spesialis dalam otomasi tangguh dengan Python, integrasi cerdas, dan kontrol antarmuka. 
-          Saya merancang infrastruktur digital dari penulisan skrip backend, model machine learning, 
-          hingga penggelaran node deployment modern yang menjembatani operasi teknis dengan antarmuka presisi.
+      <div className="relative z-30 pt-4">
+        <p className="max-w-2xl text-sm sm:text-base text-[#9CA3AF] leading-relaxed">
+          Saya membangun aplikasi web, mobile, dashboard, dan sistem automation berbasis AI untuk membantu bisnis bekerja lebih cepat, rapi, dan efisien.
         </p>
       </div>
 
       {/* CTA Buttons */}
-      <div className="relative z-30 flex flex-wrap items-center gap-4 pt-4">
-        <a href="#projects" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#E0E2E5] text-[#0F1115] text-[11px] font-mono uppercase font-bold hover:bg-white transition-colors rounded-sm shadow-[0_0_15px_rgba(224,226,229,0.1)] hover:shadow-[0_0_20px_rgba(224,226,229,0.2)]">
-          Deploy_Projects()
-        </a>
-        <a href="#contact" className="inline-flex items-center justify-center px-6 py-2.5 border border-[#30363D] bg-[#0F1115]/50 backdrop-blur-sm text-[#E0E2E5] text-[11px] font-mono uppercase font-bold hover:border-[#8B949E] hover:bg-[#161B22]/80 transition-colors rounded-sm">
-          Init_Contact
-        </a>
+      <div className="relative z-30 flex flex-wrap items-center gap-4 pt-6">
+        <motion.a 
+          href="#projects" 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 justify-center px-6 py-3 bg-[#F9FAFB] text-[#0B0F19] text-[12px] font-sans font-bold hover:bg-white transition-colors rounded-full shadow-[0_0_20px_rgba(249,250,251,0.1)] hover:shadow-[0_0_25px_rgba(249,250,251,0.25)]"
+        >
+          View My Projects <ArrowRight size={14} />
+        </motion.a>
+        <motion.a 
+          href="#contact" 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center justify-center px-6 py-3 border border-[#30363D] bg-[#0B0F19]/50 backdrop-blur-sm text-[#F9FAFB] text-[12px] font-sans font-medium hover:border-[#9CA3AF] hover:bg-[#111827] transition-colors rounded-full"
+        >
+          Contact Me
+        </motion.a>
+        <motion.a 
+          href={cvFile}
+          download="Zaky_Aulia_Qolbi_CV.pdf"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 justify-center px-6 py-3 border border-transparent text-[#9CA3AF] text-[12px] font-sans font-medium hover:text-[#06B6D4] transition-colors rounded-full"
+        >
+          <Download size={14} /> Download CV
+        </motion.a>
       </div>
     </motion.section>
   );

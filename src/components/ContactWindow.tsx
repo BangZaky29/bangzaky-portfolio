@@ -1,52 +1,56 @@
 import { motion } from 'motion/react';
 import { socialLinks } from '../data/socialLinks';
+import { ArrowUpRight } from 'lucide-react';
 
 export function ContactWindow() {
   return (
-    <section id="contact" className="pt-8 pb-4">
+    <section id="contact" className="pt-8 pb-4 space-y-6">
+      <div className="flex items-center gap-4 border-b border-[#1F2937] pb-3">
+        <span className="font-mono text-[10px] text-[#06B6D4]">07 //</span>
+        <h2 className="text-xs sm:text-sm font-bold text-[#F9FAFB] font-mono tracking-widest uppercase">Contact</h2>
+      </div>
+
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="border border-[#1F2937] bg-[#161B22] p-6 lg:p-8 rounded-sm"
+        className="p-8 lg:p-12 border border-[#1F2937] bg-[#111827]/30 rounded-sm relative overflow-hidden"
       >
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-          <div className="space-y-3 flex-1">
-             <div className="font-mono text-[10px] text-[#3B82F6] uppercase tracking-widest">Initialize Connection</div>
-             <h2 className="text-xl font-bold text-[#E0E2E5] tracking-tight">Open for System Handshake</h2>
-             <p className="text-[13px] text-[#8B949E] max-w-sm leading-relaxed">
-               Membutuhkan arsitek aplikasi, kustomisasi automasi skrip, atau dasbor analitik real-time? Terminal ini selalu <span className="text-[#10B981]">ready</span>.
+        {/* Glow backdrop */}
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#06B6D4]/5 blur-[80px] rounded-full pointer-events-none" />
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 relative z-10">
+          <div className="space-y-4 max-w-md">
+             <h2 className="text-3xl sm:text-4xl font-bold text-[#F9FAFB] tracking-tight">Let's Build Something Useful.</h2>
+             <p className="text-[14px] text-[#9CA3AF] leading-relaxed">
+               Membutuhkan arsitek aplikasi, kustomisasi automasi AI, atau dasbor analitik operasional? Saya terbuka untuk proyek baru dan kolaborasi teknis.
              </p>
           </div>
-          <div className="font-mono text-[11px] bg-[#0D1117] border border-[#30363D] p-5 w-full md:w-auto rounded-sm">
-             <div className="text-[#8B949E] mb-3">zaky@operator:~$ <span className="text-[#E0E2E5]">social --list</span></div>
-             <div className="space-y-1.5 pl-2 leading-relaxed">
-               {socialLinks.map(link => (
-                 <div key={link.id}>
-                   <span className="text-[#3B82F6]">{link.label}:</span>{' '}
-                   <a 
-                     href={link.url}
-                     target={link.type === 'email' ? undefined : '_blank'}
-                     rel={link.type === 'email' ? undefined : 'noopener noreferrer'}
-                     className="hover:text-white transition-colors duration-200 ml-1"
-                   >
-                     {link.displayText}
-                   </a>
+          
+          <div className="w-full md:w-auto flex flex-col gap-3">
+             {socialLinks.map(link => (
+               <motion.a 
+                 key={link.id}
+                 href={link.url}
+                 target={link.type === 'email' ? undefined : '_blank'}
+                 rel={link.type === 'email' ? undefined : 'noopener noreferrer'}
+                 whileHover={{ x: 4 }}
+                 className="flex items-center justify-between gap-8 px-6 py-4 border border-[#1F2937] bg-[#0B0F19] hover:bg-[#111827] hover:border-[#06B6D4]/50 transition-all duration-300 rounded-sm group"
+               >
+                 <div className="flex items-center gap-3">
+                   <span className="text-[#06B6D4]">{/* You can map actual lucide icons here if you prefer, leaving as text or keeping simple */}</span>
+                   <div>
+                     <div className="text-[11px] font-mono text-[#9CA3AF] uppercase mb-0.5">{link.label}</div>
+                     <div className="text-[13px] font-medium text-[#F9FAFB] group-hover:text-white">{link.displayText}</div>
+                   </div>
                  </div>
-               ))}
-               <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[#1F2937]">
-                 <span className="w-1.5 h-1.5 bg-[#10B981] animate-pulse"></span>
-                 <span className="text-[#10B981]">AWAITING_INPUT...</span>
-               </div>
-             </div>
+                 <ArrowUpRight size={16} className="text-[#4B5563] group-hover:text-[#06B6D4] transition-colors" />
+               </motion.a>
+             ))}
           </div>
         </div>
       </motion.div>
-      <div className="mt-6 font-mono text-[9px] text-[#30363D] flex justify-between uppercase">
-        <span>sys_shutdown --delay 0</span>
-        <span>Version 2.4.0</span>
-      </div>
     </section>
   );
 }

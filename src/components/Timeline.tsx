@@ -3,9 +3,10 @@ import { timelineEvents } from '../data/timeline';
 
 export function Timeline() {
   return (
-    <section className="space-y-4">
-      <div className="flex flex-col gap-1 border-b border-[#1F2937] pb-2">
-        <h2 className="text-[11px] font-bold text-[#8B949E] font-mono tracking-widest uppercase">EXEC_HISTORY</h2>
+    <section className="space-y-6 pt-4">
+      <div className="flex items-center gap-4 border-b border-[#1F2937] pb-3">
+        <span className="font-mono text-[10px] text-[#06B6D4]">05 //</span>
+        <h2 className="text-xs sm:text-sm font-bold text-[#F9FAFB] font-mono tracking-widest uppercase">Experience & Journey</h2>
       </div>
 
       <div className="relative pl-3.5 space-y-7 before:absolute before:inset-0 before:ml-[4px] before:-translate-x-px before:h-full before:w-[1px] before:bg-[#1F2937]">
