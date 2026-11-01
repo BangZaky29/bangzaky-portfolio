@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  Mail, 
-  Copy, 
-  Send, 
-  MessageCircle, 
-  Github, 
-  Linkedin, 
-  Instagram, 
+import {
+  Mail,
+  Copy,
+  Send,
+  MessageCircle,
+  Github,
+  Linkedin,
+  Instagram,
   FileText,
   Terminal,
   Check
@@ -48,7 +48,7 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
   return (
     <section id="contact" className="py-20 sm:py-28 relative overflow-hidden">
       <div className="w-full max-w-7xl xl:max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-8 space-y-16">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#1E293B]/60">
           <div>
@@ -79,7 +79,7 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
 
         {/* Main Contact Grid with Angled Vector Entrances */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          
+
           {/* Left Column: 1-Click Copy & Direct Social Links (Slide from Left) */}
           <motion.div
             initial={{ opacity: 0, x: -35 }}
@@ -105,13 +105,12 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
                 <div className="text-xs text-[#94A3B8]">Click to copy email address:</div>
                 <button
                   onClick={handleCopyEmail}
-                  className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-all text-left group cursor-pointer touch-manipulation ${
-                    copied
+                  className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-all text-left group cursor-pointer touch-manipulation ${copied
                       ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300'
                       : isUV
-                      ? 'bg-[#151026] border-purple-500/40 text-white hover:border-purple-400'
-                      : 'bg-[#121826] border-[#1E293B] text-white hover:border-cyan-400/60'
-                  }`}
+                        ? 'bg-[#151026] border-purple-500/40 text-white hover:border-purple-400'
+                        : 'bg-[#121826] border-[#1E293B] text-white hover:border-cyan-400/60'
+                    }`}
                 >
                   <span className="font-mono text-xs sm:text-base font-bold truncate pr-2">
                     {emailAddr}
@@ -140,7 +139,7 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] cursor-pointer touch-manipulation active:scale-95"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>CHAT DIRECT VIA WHATSAPP (+62 819-9577-0190)</span>
+                <span>WHATSAPP</span>
               </a>
             </InteractiveCard>
 
@@ -244,11 +243,10 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
 
                 <button
                   type="submit"
-                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer touch-manipulation active:scale-95 ${
-                    isUV
+                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer touch-manipulation active:scale-95 ${isUV
                       ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]'
                       : 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_20px_rgba(6,182,212,0.35)]'
-                  }`}
+                    }`}
                 >
                   <Send className="w-4 h-4" />
                   <span>SEND DIRECT BRIEF VIA WHATSAPP</span>
