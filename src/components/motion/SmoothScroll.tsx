@@ -25,7 +25,7 @@ export function smoothScrollTo(target: string | HTMLElement, offset: number = -6
   const lenis = window.__lenis;
   if (lenis) {
     lenis.scrollTo(target, {
-      duration: 1.6,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       offset,
     });
@@ -40,8 +40,8 @@ interface SmoothScrollProps {
 }
 
 /**
- * Continuous Kinetic Momentum Lenis Smooth Scroll Provider
- * Glides smoothly across all components with natural physical inertia
+ * Natural Balanced Lenis Smooth Scroll Provider
+ * Smooth, gentle, and controllable deceleration without hyper-sensitivity
  */
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -63,13 +63,11 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     <ReactLenis
       root
       options={{
-        duration: 1.6, // Continuous silky gliding scroll across all components
+        duration: 1.1, // Smooth, gentle, and natural deceleration
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        wheelMultiplier: 1.35, // Generous impulse on flick
-        touchMultiplier: 2.0, // Natural responsive swipe inertia on trackpad/mobile
-        syncTouch: true,
-        syncTouchLerp: 0.08,
-        touchInertiaExponent: 1.8,
+        wheelMultiplier: 0.95, // Normal balanced mouse wheel sensitivity
+        touchMultiplier: 1.0, // Natural 1:1 mobile & trackpad response
+        syncTouch: false, // Clean native touch momentum on touchscreens
         smoothWheel: true,
         autoResize: true,
       }}
