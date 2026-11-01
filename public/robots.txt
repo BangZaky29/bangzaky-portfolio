@@ -1,0 +1,8 @@
+# robots.txt for https://bangzaky.my.id
+User-agent: *
+Allow: /
+
+# Host & Sitemap Definition
+Host: https://bangzaky.my.id
+Sitemap: https://bangzaky.my.id/sitemap.xml
+

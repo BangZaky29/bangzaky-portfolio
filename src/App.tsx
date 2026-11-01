@@ -1,68 +1,148 @@
 import { useState, useEffect } from 'react';
-import { IntroSequence } from './components/IntroSequence';
-import { Hero } from './components/Hero';
-import { Profile } from './components/Profile';
-import { WhatICanBuild } from './components/WhatICanBuild';
-import { TechMatrix } from './components/TechMatrix';
-import { ProjectsLog } from './components/ProjectsLog';
-import { Certifications } from './components/Certifications';
-import { Timeline } from './components/Timeline';
-import { ContactWindow } from './components/ContactWindow';
+import { useScroll, useVelocity, useSpring, useMotionValueEvent } from 'motion/react';
+import { LightingMode, NavSectionId } from './types';
+import { SmoothScroll, smoothScrollTo } from './components/motion/SmoothScroll';
+import { HeaderHUD } from './components/layout/HeaderHUD';
+import { BottomHUD } from './components/layout/BottomHUD';
+import { UVLightCursor } from './components/layout/UVLightCursor';
+import { Footer } from './components/layout/Footer';
+import { HomeHero } from './components/sections/HomeHero';
+import { CraftSection } from './components/sections/CraftSection';
+import { WorkSection } from './components/sections/WorkSection';
+import { ExperienceSection } from './components/sections/ExperienceSection';
+import { ContactSection } from './components/sections/ContactSection';
+import { Toast } from './components/ui/Toast';
 
 export default function App() {
-  const [time, setTime] = useState(new Date());
-  
+  const [lightingMode, setLightingMode] = useState<LightingMode>('warm');
+  const [activeSection, setActiveSection] = useState<NavSectionId>('home');
+  const [coordinates, setCoordinates] = useState<{ x: number; y: number }>({ x: -1, y: -1 });
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [scrollPercentage, setScrollPercentage] = useState(0);
+  const [velocity, setVelocity] = useState(0);
+
+  // Motion scroll progress & kinetic velocity tracking
+  const { scrollY, scrollYProgress } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 45,
+    stiffness: 300,
+    mass: 0.5,
+  });
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    setScrollPercentage(Math.round(latest * 100));
+  });
+
+  useMotionValueEvent(smoothVelocity, 'change', (latest) => {
+    setVelocity(Math.round(latest));
+  });
+
+  // Active section spy on scroll
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    const handleScroll = () => {
+      const sections: NavSectionId[] = ['home', 'craft', 'work', 'experience', 'contact'];
+      const scrollPos = window.scrollY + window.innerHeight * 0.35;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPos >= top) {
+            setActiveSection(sections[i]);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
-    <IntroSequence>
-      <div className="min-h-screen bg-[#0B0F19] text-[#F9FAFB] font-sans selection:bg-[#06B6D4]/30 selection:text-white">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-20 space-y-16 lg:space-y-24">
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#1F2937] pb-4 gap-4">
-          <div className="font-mono text-[11px] text-[#9CA3AF] flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-[#06B6D4]">SYS_AUTH:</span>
-              <span className="text-[#F9FAFB] uppercase tracking-wider">ZAKY_AULIA_QOLBI // OPR_v3.0</span>
-            </div>
-            <div className="hidden sm:block text-[#30363D]">|</div>
-            <div className="flex items-center gap-2">
-              <span>LAT: -6.2088</span>
-              <span>LON: 106.8456</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-[10px] font-mono">
-            <div className="text-[#9CA3AF]">
-              {time.toISOString().replace('T', ' ').substring(0, 19)} UTC
-            </div>
-            <div className="flex items-center gap-2 border border-[#10B981]/30 bg-[#10B981]/10 px-2 py-1 rounded-sm">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#10B981]"></span>
-              </span>
-              <span className="text-[#10B981] uppercase tracking-wider">Sys_Online</span>
-            </div>
-          </div>
-        </header>
-        
-        <main className="space-y-20 lg:space-y-28">
-          <Hero />
-          <Profile />
-          <WhatICanBuild />
-          <ProjectsLog />
-          <TechMatrix />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
-            <Timeline />
-            <Certifications />
-          </div>
+  const handleNavigate = (sectionId: NavSectionId) => {
+    setActiveSection(sectionId);
+    smoothScrollTo(`#${sectionId}`, -60);
+  };
 
-          <ContactWindow />
+  const handleToggleLighting = () => {
+    setLightingMode((prev) => (prev === 'warm' ? 'uv' : 'warm'));
+  };
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => {
+      setToastMsg((current) => (current === msg ? null : current));
+    }, 3000);
+  };
+
+  const isUV = lightingMode === 'uv';
+
+  return (
+    <SmoothScroll>
+      <div
+        className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-500/30 selection:text-white ${
+          isUV ? 'bg-[#090812] text-[#F3F4F6]' : 'bg-[#08090C] text-[#F8FAFC]'
+        }`}
+      >
+        {/* Interactive UV / Spotlight Lamp Following Cursor */}
+        <UVLightCursor
+          lightingMode={lightingMode}
+          onCoordinatesChange={setCoordinates}
+        />
+
+        {/* Top Navbar with 5 Section Navigation, Mobile Drawer & Realtime Velocity Feedback */}
+        <HeaderHUD
+          lightingMode={lightingMode}
+          activeSection={activeSection}
+          onNavigate={handleNavigate}
+          scrollPercentage={scrollPercentage}
+          velocity={velocity}
+        />
+
+        {/* Main Content Sections */}
+        <main className="relative z-10 pb-16 sm:pb-12">
+          <HomeHero
+            lightingMode={lightingMode}
+            onNavigate={handleNavigate}
+          />
+
+          <CraftSection
+            lightingMode={lightingMode}
+          />
+
+          <WorkSection
+            lightingMode={lightingMode}
+          />
+
+          <ExperienceSection
+            lightingMode={lightingMode}
+          />
+
+          <ContactSection
+            lightingMode={lightingMode}
+            onShowToast={showToast}
+          />
         </main>
+
+        {/* Minimalist Transparent Floating Bottom HUD (Split Left & Right) */}
+        <BottomHUD
+          lightingMode={lightingMode}
+          onToggleLighting={handleToggleLighting}
+          coordinates={coordinates}
+          scrollPercentage={scrollPercentage}
+          velocity={velocity}
+        />
+
+        {/* Minimalist Footer */}
+        <Footer lightingMode={lightingMode} />
+
+        {/* Toast Notification Container */}
+        <Toast
+          message={toastMsg}
+          onClose={() => setToastMsg(null)}
+        />
       </div>
-    </div>
-    </IntroSequence>
+    </SmoothScroll>
   );
 }
