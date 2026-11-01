@@ -176,8 +176,8 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
               </a>
 
               <a
-                href="/src/assets/myCV/My-CV.pdf"
-                download="Zaky-Aulia-Qolbi-CV.pdf"
+                href="/myCV/My-CV.pdf"
+                download="Zaky Aulia Qolbi - Creative Developer & AI Systems Engineer.pdf"
                 className="flex items-center gap-2 p-3.5 rounded-lg bg-[#0D121D] border border-[#1E293B] text-[#94A3B8] hover:text-white hover:border-cyan-500/50 transition-all touch-manipulation"
               >
                 <FileText className="w-4 h-4 text-amber-400" />

@@ -68,6 +68,7 @@ export interface Certification {
   year?: string;
   category: 'technical' | 'language' | 'database';
   fileName: string;
+  downloadName?: string;
 }
 
 export interface SocialLink {

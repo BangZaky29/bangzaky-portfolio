@@ -103,8 +103,8 @@ export function HomeHero({ lightingMode, onNavigate }: HomeHeroProps) {
                 <button
                   onClick={() => onNavigate('work')}
                   className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-md font-bold transition-all duration-200 cursor-pointer touch-manipulation active:scale-95 ${isUV
-                      ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]'
-                      : 'bg-cyan-500 hover:bg-cyan-400 text-[#090D16] shadow-[0_0_20px_rgba(6,182,212,0.35)]'
+                    ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]'
+                    : 'bg-cyan-500 hover:bg-cyan-400 text-[#090D16] shadow-[0_0_20px_rgba(6,182,212,0.35)]'
                     }`}
                 >
                   <span>EXPLORE WORK</span>
@@ -120,8 +120,8 @@ export function HomeHero({ lightingMode, onNavigate }: HomeHeroProps) {
                 </button>
 
                 <a
-                  href="/src/assets/myCV/My-CV.pdf"
-                  download="Zaky-Aulia-Qolbi-CV.pdf"
+                  href="/myCV/My-CV.pdf"
+                  download="Zaky Aulia Qolbi - Creative Developer & AI Systems Engineer.pdf"
                   className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 rounded-md bg-[#111827]/60 hover:bg-[#1A2234] border border-[#1E293B] text-[#94A3B8] hover:text-white transition-all duration-200 touch-manipulation active:scale-95"
                 >
                   <FileText className="w-4 h-4" />

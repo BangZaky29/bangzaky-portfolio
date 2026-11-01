@@ -8,7 +8,13 @@
 
 html {
   color-scheme: dark;
-  --stack-base-top: clamp(72px, calc(50vh - 215px), 125px);
+  --stack-base-top: clamp(62px, 8vh, 72px);
+}
+
+@media (min-width: 640px) {
+  html {
+    --stack-base-top: clamp(76px, calc(50vh - 225px), 125px);
+  }
 }
 
 /* Lenis Smooth Scroll Core Rules */

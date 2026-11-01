@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { Project, LightingMode } from '../../types';
 import { smoothScrollTo } from '../motion/SmoothScroll';
-import { useAdaptiveLayout } from '../../hooks/useAdaptiveLayout';
 
 interface StackingProjectCardProps {
   key?: string;
@@ -31,12 +30,11 @@ export function StackingProjectCard({
   onOpenCaseStudy,
 }: StackingProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const { getStackTop, isMobile } = useAdaptiveLayout();
   const isUV = lightingMode === 'uv';
 
   const handleHeaderClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    smoothScrollTo(`#project-${project.id}`, isMobile ? -70 : -110);
+    smoothScrollTo(`#project-${project.id}`, -110);
   };
 
 
@@ -81,9 +79,9 @@ export function StackingProjectCard({
       id={`project-${project.id}`}
       style={{
         zIndex: 10 + index,
-        top: `${getStackTop(index)}px`,
+        top: 'var(--stack-base-top)',
       }}
-      className="sticky w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto pb-16 sm:pb-28 lg:pb-36 will-change-transform flex justify-center"
+      className="sticky w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto pb-20 sm:pb-28 lg:pb-36 will-change-transform flex justify-center"
     >
       {/* ═════════════════════════════════════════════════════════════
           LARGE RECTANGULAR FOLDER / PAPER STACK CARD (HORIZONTALLY CENTERED)

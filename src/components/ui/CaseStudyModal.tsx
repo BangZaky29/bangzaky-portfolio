@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ExternalLink, Activity, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { Project, LightingMode } from '../../types';
-import { useAdaptiveLayout } from '../../hooks/useAdaptiveLayout';
 
 interface CaseStudyModalProps {
   project: Project | null;
@@ -11,8 +11,6 @@ interface CaseStudyModalProps {
 }
 
 export function CaseStudyModal({ project, onClose, lightingMode }: CaseStudyModalProps) {
-  const { isMobile, isTablet } = useAdaptiveLayout();
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -29,49 +27,44 @@ export function CaseStudyModal({ project, onClose, lightingMode }: CaseStudyModa
     };
   }, [project, onClose]);
 
-  if (!project) return null;
+  if (!project || typeof document === 'undefined') return null;
 
   const isUV = lightingMode === 'uv';
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <div
-        className={`fixed inset-0 z-50 flex justify-center overflow-hidden ${
-          isMobile
-            ? 'items-end p-2.5 pb-3 sm:pb-4'
-            : isTablet
-            ? 'items-center p-4 sm:p-6'
-            : 'items-center p-6'
-        }`}
+        className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="case-study-title"
       >
-        {/* Backdrop (leaving top area visible on mobile so user stays contextually anchored) */}
+        {/* Full-screen Dark Backdrop with strong blur and dimming */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/80 backdrop-blur-md cursor-pointer"
+          className="fixed inset-0 bg-black/85 backdrop-blur-md cursor-pointer"
         />
 
-        {/* Modal Window / Floating Mini Bottom-Sheet */}
+        {/* Modal Window: Centered vertically and horizontally on mobile & desktop */}
         <motion.div
-          initial={{ opacity: 0, y: isMobile ? 60 : 25, scale: isMobile ? 1 : 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: isMobile ? 60 : 20, scale: isMobile ? 1 : 0.96 }}
-          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, scale: 0.94, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.94, y: 15 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className={`relative w-full max-w-[94vw] sm:max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl border ${
             isUV
-              ? 'border-purple-500/40 bg-[#0C0B1B]/95 shadow-[0_0_50px_rgba(168,85,247,0.25)]'
-              : 'border-[#1E293B] bg-[#0A0E17]/95 shadow-[0_0_50px_rgba(0,0,0,0.85)]'
-          } backdrop-blur-xl flex flex-col overflow-hidden z-10 ${
-            isMobile ? 'max-h-[82dvh] mb-1' : 'max-h-[88vh]'
-          }`}
+              ? 'border-purple-500/40 bg-[#0C0B1B] shadow-[0_0_60px_rgba(168,85,247,0.3)]'
+              : 'border-[#1E293B] bg-[#0A0E17] shadow-[0_0_60px_rgba(0,0,0,0.95)]'
+          } backdrop-blur-2xl flex flex-col overflow-hidden z-10 max-h-[84vh] sm:max-h-[88vh] my-auto`}
         >
           {/* Mobile Top Drag Handle Bar */}
           <div className="w-10 h-1 bg-[#334155] rounded-full mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
 
           {/* Sticky Header Strip */}
-          <div className="shrink-0 px-4 sm:px-6 py-3 sm:py-4 border-b border-[#1E293B]/80 flex items-start justify-between gap-3 bg-[#0A0E17]/90">
+          <div className="shrink-0 px-4 sm:px-6 py-3 sm:py-3.5 border-b border-[#1E293B]/80 flex items-start justify-between gap-3 bg-[#0A0E17]">
             <div className="min-w-0 pr-2">
               <div className="flex items-center gap-1.5 sm:gap-2 font-mono text-[11px] sm:text-xs mb-1">
                 <span className={isUV ? 'text-purple-400 font-bold' : 'text-cyan-400 font-bold'}>
@@ -82,7 +75,10 @@ export function CaseStudyModal({ project, onClose, lightingMode }: CaseStudyModa
                 <span className="text-[#475569]">/</span>
                 <span className="text-[#64748B]">{project.year}</span>
               </div>
-              <h3 className="text-base sm:text-2xl font-extrabold text-white leading-snug line-clamp-2">
+              <h3
+                id="case-study-title"
+                className="text-base sm:text-2xl font-extrabold text-white leading-snug line-clamp-2"
+              >
                 {project.name}
               </h3>
             </div>
@@ -99,7 +95,7 @@ export function CaseStudyModal({ project, onClose, lightingMode }: CaseStudyModa
           {/* Scrollable Body (data-lenis-prevent ensures modal scroll never fights background page) */}
           <div
             data-lenis-prevent
-            className="flex-1 overflow-y-auto overscroll-contain px-4 py-3.5 sm:px-6 sm:py-5 space-y-3.5 sm:space-y-4 text-left"
+            className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 sm:px-6 sm:py-4 space-y-3 sm:space-y-3.5 text-left"
           >
             {/* 1. The Problem / Bottleneck */}
             <div
@@ -194,7 +190,7 @@ export function CaseStudyModal({ project, onClose, lightingMode }: CaseStudyModa
           </div>
 
           {/* Sticky Bottom Action Button */}
-          <div className="shrink-0 px-4 py-3 sm:px-6 sm:py-3.5 border-t border-[#1E293B]/80 bg-[#0A0E17]/95">
+          <div className="shrink-0 px-4 py-3 sm:px-6 sm:py-3.5 border-t border-[#1E293B]/80 bg-[#0A0E17]">
             {project.url ? (
               <a
                 href={project.url}
@@ -218,6 +214,7 @@ export function CaseStudyModal({ project, onClose, lightingMode }: CaseStudyModa
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

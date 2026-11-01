@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Award, FileText, ChevronRight, CheckCircle2, X } from 'lucide-react';
 import { LightingMode } from '../../types';
@@ -187,60 +188,76 @@ export function ExperienceSection({ lightingMode }: ExperienceSectionProps) {
       </div>
 
       {/* Certificate Preview Modal */}
-      <AnimatePresence>
-        {selectedCertObj && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveCert(null)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md cursor-pointer"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-2xl rounded-xl bg-[#0B0F19] border border-[#1E293B] p-6 space-y-4 z-10"
-            >
-              <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span className="font-mono text-xs text-white font-bold">{selectedCertObj.id} // VERIFIED CERTIFICATE</span>
-                </div>
-                <button
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {selectedCertObj && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   onClick={() => setActiveCert(null)}
-                  className="p-1.5 rounded hover:bg-[#1E293B] text-[#94A3B8] hover:text-white transition-colors cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+                  className="fixed inset-0 bg-black/85 backdrop-blur-md cursor-pointer"
+                />
 
-              <div className="space-y-2">
-                <h4 className="text-xl font-bold text-white">{selectedCertObj.title}</h4>
-                <p className="text-xs font-mono text-cyan-400">Issued by: {selectedCertObj.issuer}</p>
-              </div>
-
-              <div className="p-4 rounded-lg bg-[#0F1420] border border-[#1E293B] flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs">
-                <div className="truncate text-[#94A3B8]">
-                  <span>File: </span>
-                  <span className="text-white">{selectedCertObj.fileName}</span>
-                </div>
-                <a
-                  href={`/src/assets/sertifikat/${encodeURIComponent(selectedCertObj.fileName)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  download
-                  className="w-full sm:w-auto text-center px-4 py-2 rounded bg-cyan-500 hover:bg-cyan-400 text-black font-bold shrink-0 transition-colors touch-manipulation"
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                  transition={{ duration: 0.22 }}
+                  className="relative w-full max-w-2xl rounded-2xl bg-[#0B0F19] border border-[#1E293B] p-5 sm:p-6 space-y-4 z-10 shadow-[0_0_50px_rgba(0,0,0,0.9)] max-h-[90vh] overflow-y-auto"
                 >
-                  Download PDF
-                </a>
+                  <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <span className="font-mono text-xs text-white font-bold">{selectedCertObj.id} // VERIFIED CREDENTIAL</span>
+                    </div>
+                    <button
+                      onClick={() => setActiveCert(null)}
+                      className="p-1.5 rounded-lg bg-[#141B2B] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1E293B] transition-colors cursor-pointer"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="text-lg sm:text-xl font-bold text-white leading-snug">{selectedCertObj.title}</h4>
+                    <p className="text-xs font-mono text-cyan-400">Issued by: {selectedCertObj.issuer}</p>
+                  </div>
+
+                  <div className="p-3.5 sm:p-4 rounded-xl bg-[#0F1420] border border-[#1E293B] flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+                    <div className="truncate text-[#94A3B8] text-[11px] sm:text-xs">
+                      <span className="text-[#64748B]">Document: </span>
+                      <span className="text-white">{selectedCertObj.downloadName || selectedCertObj.fileName}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                      <a
+                        href={`/sertifikat/${selectedCertObj.fileName}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="w-1/2 sm:w-auto text-center px-3.5 py-2 rounded-lg border border-[#1E293B] hover:border-cyan-400 text-[#CBD5E1] hover:text-white transition-colors touch-manipulation cursor-pointer"
+                      >
+                        Preview ↗
+                      </a>
+                      <a
+                        href={`/sertifikat/${selectedCertObj.fileName}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        download={selectedCertObj.downloadName || selectedCertObj.fileName}
+                        className="w-1/2 sm:w-auto text-center px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] touch-manipulation cursor-pointer"
+                      >
+                        Download PDF
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </section>
   );
 }
