@@ -79,14 +79,14 @@ export function HomeHero({ lightingMode, onNavigate }: HomeHeroProps) {
                     ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400'
                     : 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-amber-300'
                 }
-                className="text-3xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-[#F8FAFC]"
+                className="text-[clamp(2.1rem,7vw,4.5rem)] font-extrabold tracking-tight leading-[1.08] text-[#F8FAFC]"
               />
 
               <RevealTitle
                 as="h2"
                 text="& AI SYSTEMS ENGINEER"
                 delay={0.15}
-                className="text-xl sm:text-4xl lg:text-5xl font-light text-[#94A3B8]"
+                className="text-[clamp(1.2rem,4vw,2.75rem)] font-light text-[#94A3B8]"
               />
             </div>
 

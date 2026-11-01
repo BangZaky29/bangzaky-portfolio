@@ -71,7 +71,7 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
         </div>
 
         {/* 4 Core Pillars Grid with InteractiveCard 3D Tilt & Cursor Spotlight */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {craftPillars.map((pillar, idx) => {
             const Icon = pillarIcons[idx % pillarIcons.length];
             return (
@@ -89,7 +89,7 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
               >
                 <InteractiveCard
                   lightingMode={lightingMode}
-                  className={`p-6 sm:p-8 rounded-xl bg-[#0D121D]/90 border transition-all duration-300 h-full flex flex-col justify-between group ${
+                  className={`p-5 sm:p-8 rounded-xl bg-[#0D121D]/90 border transition-all duration-300 h-full flex flex-col justify-between group ${
                     isUV
                       ? 'border-[#271E3D] hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.18)]'
                       : 'border-[#1E293B] hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]'
@@ -187,11 +187,11 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
               <h3 className="text-2xl font-bold text-white">Verified Stack & Proficiencies</h3>
             </div>
 
-            {/* Filter Categories */}
-            <div className="flex flex-wrap items-center gap-1.5 p-1 bg-[#0F1420] border border-[#1E293B] rounded-lg">
+            {/* Filter Categories (Fluid Horizontally Scrollable on Mobile) */}
+            <div className="flex items-center gap-1.5 p-1 bg-[#0F1420] border border-[#1E293B] rounded-lg overflow-x-auto no-scrollbar whitespace-nowrap max-w-full">
               <button
                 onClick={() => setSelectedTechCategory('all')}
-                className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation ${
+                className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation shrink-0 ${
                   selectedTechCategory === 'all'
                     ? isUV ? 'bg-purple-600 text-white font-semibold' : 'bg-cyan-500 text-black font-semibold'
                     : 'text-[#94A3B8] hover:text-white'
@@ -203,7 +203,7 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
                 <button
                   key={cat.id}
                   onClick={() => setSelectedTechCategory(cat.id)}
-                  className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation ${
+                  className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation shrink-0 ${
                     selectedTechCategory === cat.id
                       ? isUV ? 'bg-purple-600 text-white font-semibold' : 'bg-cyan-500 text-black font-semibold'
                       : 'text-[#94A3B8] hover:text-white'

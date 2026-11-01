@@ -190,15 +190,22 @@ export function HeaderHUD({
           })}
         </nav>
 
-        {/* Mobile View: Top Burger Button */}
-        <div className="flex md:hidden items-center">
+        {/* Mobile View: Compact Scroll % & Top Burger Button */}
+        <div className="flex md:hidden items-center gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0F1420]/80 border border-[#1E293B] text-[10px] text-[#94A3B8]">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className={isUV ? 'text-purple-300 font-bold' : 'text-cyan-400 font-bold'}>
+              {Math.round(scrollPercentage)}%
+            </span>
+          </div>
+
           <button
             onClick={() => setIsOpenMobile(!isOpenMobile)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all cursor-pointer touch-manipulation active:scale-95 ${isOpenMobile
               ? 'bg-[#141B2B] border-cyan-400 text-white'
               : isUV
                 ? 'bg-purple-950/40 border-purple-500/50 text-purple-200'
-                : 'bg-[#0F1420] border-[#1E293B] text-cyan-400'
+                : 'bg-[#0F1420] border-[#1E293B] text-cyan-400 hover:border-cyan-400'
               }`}
             aria-label="Toggle Navigation Menu"
           >

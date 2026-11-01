@@ -55,13 +55,13 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
             />
           </div>
 
-          {/* Filter Tabs with Active Layout Pill */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-[#0F1420] border border-[#1E293B] rounded-xl font-mono text-xs">
+          {/* Filter Tabs with Active Layout Pill (Fluid Horizontally Scrollable on Mobile) */}
+          <div className="flex items-center gap-1.5 p-1 bg-[#0F1420] border border-[#1E293B] rounded-xl font-mono text-xs overflow-x-auto no-scrollbar whitespace-nowrap max-w-full">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`relative px-3.5 py-1.5 rounded-lg transition-all cursor-pointer touch-manipulation ${
+                className={`relative px-3.5 py-1.5 rounded-lg transition-all cursor-pointer touch-manipulation shrink-0 ${
                   activeCategory === cat.id
                     ? isUV
                       ? 'text-white font-bold'

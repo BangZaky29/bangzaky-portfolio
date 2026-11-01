@@ -299,7 +299,7 @@ export function CreativeCanvas({ lightingMode }: CreativeCanvasProps) {
   }, [lightingMode]);
 
   return (
-    <div className="relative w-full h-[280px] sm:h-[400px] lg:h-[480px] flex items-center justify-center pointer-events-auto touch-manipulation">
+    <div className="relative w-full h-[260px] sm:h-[400px] lg:h-[480px] flex items-center justify-center pointer-events-auto touch-manipulation">
       <canvas
         ref={canvasRef}
         className="w-full h-full cursor-grab active:cursor-grabbing block"

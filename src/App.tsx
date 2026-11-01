@@ -101,7 +101,7 @@ export default function App() {
         />
 
         {/* Main Content Sections */}
-        <main className="relative z-10 pb-16 sm:pb-12">
+        <main className="relative z-10 pb-16 sm:pb-12 w-full max-w-[100vw] overflow-x-clip">
           <HomeHero
             lightingMode={lightingMode}
             onNavigate={handleNavigate}
