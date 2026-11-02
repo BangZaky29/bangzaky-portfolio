@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Layers } from 'lucide-react';
+import { Projector, Sparkles } from 'lucide-react';
 import { Project, LightingMode } from '../../types';
 import { allProjects } from '../../data/projects';
-import { StackingProjectCard } from '../work/StackingProjectCard';
+import { ProjectorCinema } from '../work/ProjectorCinema';
 import { CaseStudyModal } from '../ui/CaseStudyModal';
 import { ScrambleText, RevealTitle, FadeUp } from '../motion/RevealText';
+import { soundEngine } from '../../audio/soundEngine';
 
 interface WorkSectionProps {
   lightingMode: LightingMode;
@@ -15,6 +16,7 @@ type FilterCategory = 'all' | 'web' | 'ai' | 'mobile';
 
 export function WorkSection({ lightingMode }: WorkSectionProps) {
   const [activeCategory, setActiveCategory] = useState<FilterCategory>('all');
+  const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const isUV = lightingMode === 'uv';
@@ -32,9 +34,15 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
     { id: 'mobile', label: 'Mobile & Ops', count: allProjects.filter((p) => p.category === 'mobile' || p.category === 'system').length },
   ];
 
+  const handleCategoryChange = (catId: FilterCategory) => {
+    soundEngine.playClick();
+    setActiveCategory(catId);
+    setActiveProjectIndex(0);
+  };
+
   return (
-    <section id="work" className="py-20 border-b border-[#1E2533] overflow-visible">
-      <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-3 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+    <section id="work" className="py-16 sm:py-24 border-b border-[#1E2533] overflow-hidden">
+      <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#1E293B]/60">
@@ -43,7 +51,7 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
               <span className={isUV ? 'text-purple-400 font-bold' : 'text-cyan-400 font-bold'}>03</span>
               <span>/</span>
               <ScrambleText
-                text="SELECTED CASE STUDIES"
+                text="PROJECTOR CINEMA SHOWCASE"
                 triggerOnHover
                 className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
               />
@@ -51,7 +59,7 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
             
             <RevealTitle
               text="WORK — PRODUCTION & CODE"
-              className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white"
+              className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-sans"
             />
           </div>
 
@@ -60,7 +68,7 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => handleCategoryChange(cat.id)}
                 className={`relative px-3.5 py-1.5 rounded-lg transition-all cursor-pointer touch-manipulation shrink-0 ${
                   activeCategory === cat.id
                     ? isUV
@@ -86,45 +94,33 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
           </div>
         </div>
 
-        {/* Stack Overview Caption */}
+        {/* Cinematic Studio Subbar */}
         <FadeUp delay={0.1}>
           <div className="flex items-center justify-between text-xs font-mono text-[#64748B]">
             <div className="flex items-center gap-2">
-              <Layers className="w-3.5 h-3.5 text-cyan-400" />
-              <span>INTERACTIVE STACKING SHOWCASE // CLICK ANY HEADER TO JUMP</span>
+              <Projector className="w-3.5 h-3.5 text-cyan-400" />
+              <span>INTERACTIVE PROJECTION ROOM // CLICK DIRECTORY OR ARROWS TO CYCLE</span>
             </div>
-            <span>{filteredProjects.length} CASE STUDIES</span>
+            <span>{filteredProjects.length} CURATED PROJECTS</span>
           </div>
         </FadeUp>
 
-        {/* Interactive Sticky Stacking Cards (Paper-Stack Scroll Effect) */}
-        <div className="relative pt-2 pb-16 w-full flex flex-col items-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25 }}
-              className="w-full flex flex-col items-center"
-            >
-              {filteredProjects.map((project, idx) => (
-                <StackingProjectCard
-                  key={project.id}
-                  project={project}
-                  index={idx}
-                  total={filteredProjects.length}
-                  lightingMode={lightingMode}
-                  onOpenCaseStudy={(proj) => setSelectedProject(proj)}
-                />
-              ))}
-            </motion.div>
-          </AnimatePresence>
+        {/* ═════════════════════════════════════════════════════════════
+            SINGLE-STAGE PROJECTOR CINEMA COMPONENT (60 FPS, ULTRA LIGHT)
+            ═════════════════════════════════════════════════════════════ */}
+        <div className="pt-2">
+          <ProjectorCinema
+            projects={filteredProjects}
+            activeIndex={activeProjectIndex}
+            onSelectIndex={(idx) => setActiveProjectIndex(idx)}
+            onOpenCaseStudy={(proj) => setSelectedProject(proj)}
+            lightingMode={lightingMode}
+          />
         </div>
 
       </div>
 
-      {/* Case Study Modal */}
+      {/* Case Study Modal (Portal Root, Centered & Non-blocking) */}
       <CaseStudyModal
         project={selectedProject}
         onClose={() => setSelectedProject(null)}

@@ -98,6 +98,7 @@ export default function App() {
           onNavigate={handleNavigate}
           scrollPercentage={scrollPercentage}
           velocity={velocity}
+          onToggleLighting={handleToggleLighting}
         />
 
         {/* Main Content Sections */}

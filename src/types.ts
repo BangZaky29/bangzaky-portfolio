@@ -54,10 +54,14 @@ export interface TechItem {
 }
 
 export interface TimelineEvent {
+  id?: string;
   year: string;
+  companyShort?: string;
+  period?: string;
   role: string;
   company?: string;
   description: string;
+  bulletPoints?: string[];
   skills: string[];
 }
 
