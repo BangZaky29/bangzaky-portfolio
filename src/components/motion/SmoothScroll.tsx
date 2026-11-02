@@ -13,6 +13,10 @@ declare global {
  */
 function LenisSync() {
   useLenis((lenis) => {
+    if (!window.__lenis) {
+      window.__lenis = lenis;
+      lenis.scrollTo(0, { immediate: true });
+    }
     window.__lenis = lenis;
   });
   return null;

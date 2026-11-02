@@ -119,6 +119,16 @@
     </script>
   </head>
   <body class="bg-[#08090C] text-[#F8FAFC]">
+    <script>
+      // Force instant scroll to top on initial load and refresh
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

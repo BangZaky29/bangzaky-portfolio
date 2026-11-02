@@ -38,6 +38,38 @@ export default function App() {
     setVelocity(Math.round(latest));
   });
 
+  // Always reset view to top Home section on initial open & browser refresh
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    // Force instant reset to top
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    setActiveSection('home');
+
+    // Clean any stale anchor hash from previous sessions
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+
+    // Secondary enforcement once Lenis is bound
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      window.__lenis?.scrollTo(0, { immediate: true });
+    }, 50);
+
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
   // Active section spy on scroll
   useEffect(() => {
     const handleScroll = () => {
