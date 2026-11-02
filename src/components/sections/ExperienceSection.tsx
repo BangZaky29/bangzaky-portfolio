@@ -1,70 +1,150 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, X } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/react';
+import { CheckCircle2, X, Compass } from 'lucide-react';
 import { LightingMode } from '../../types';
 import { timelineMilestones } from '../../data/timeline';
 import { certifications } from '../../data/certifications';
-import { ScrambleText, RevealTitle, FadeUp } from '../motion/RevealText';
+import { ScrambleText, RevealTitle } from '../motion/RevealText';
 import { SpotlightRoom } from '../experience/SpotlightRoom';
+import { soundEngine } from '../../audio/soundEngine';
+import { useAdaptiveLayout } from '../../hooks/useAdaptiveLayout';
 
 interface ExperienceSectionProps {
   lightingMode: LightingMode;
 }
 
 export function ExperienceSection({ lightingMode }: ExperienceSectionProps) {
-  const [activeMilestoneIndex, setActiveMilestoneIndex] = useState<number>(milestonesInitialIndex());
+  const [activeMilestoneIndex, setActiveMilestoneIndex] = useState<number>(0);
   const [activeCert, setActiveCert] = useState<string | null>(null);
+  const prevIndexRef = useRef<number>(0);
+
+  const { isMobile } = useAdaptiveLayout();
+  const sectionRef = useRef<HTMLElement>(null);
 
   const isUV = lightingMode === 'uv';
   const selectedCertObj = certifications.find((c) => c.id === activeCert);
 
-  function milestonesInitialIndex() {
-    return timelineMilestones.length > 0 ? timelineMilestones.length - 1 : 0;
-  }
+  // Pinned scroll-driven track for Experience Spotlight Room
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end end'],
+  });
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    const total = timelineMilestones.length;
+    if (total <= 1) return;
+    const clampedProgress = Math.min(0.9999, Math.max(0, latest));
+    const targetIdx = Math.min(total - 1, Math.floor(clampedProgress * total));
+
+    if (targetIdx !== activeMilestoneIndex) {
+      setActiveMilestoneIndex(targetIdx);
+      if (Math.abs(targetIdx - prevIndexRef.current) === 1) {
+        soundEngine.playSlide();
+      }
+      prevIndexRef.current = targetIdx;
+    }
+  });
+
+  const handleSelectMilestoneWithScroll = (idx: number) => {
+    setActiveMilestoneIndex(idx);
+    soundEngine.playSlide();
+    prevIndexRef.current = idx;
+
+    if (sectionRef.current) {
+      const rect = sectionRef.current.getBoundingClientRect();
+      const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+      const sectionTop = rect.top + currentScrollTop;
+      const totalScrollable = sectionRef.current.offsetHeight - window.innerHeight;
+      if (totalScrollable > 0 && timelineMilestones.length > 1) {
+        const targetScrollY = sectionTop + ((idx + 0.45) / timelineMilestones.length) * totalScrollable;
+        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+      }
+    }
+  };
+
+  // Dynamic scroll height based on milestone count
+  const scrollHeightVh = Math.max(timelineMilestones.length * (isMobile ? 55 : 70), 180);
 
   return (
-    <section id="experience" className="py-16 sm:py-24 border-b border-[#1E2533] overflow-hidden relative">
-      <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+    <section
+      id="experience"
+      ref={sectionRef}
+      style={{ height: `${scrollHeightVh}vh` }}
+      className="relative border-b border-[#1E2533]"
+    >
+      {/* ─── Pinned Sticky Spotlight Viewport ─── */}
+      <div className="sticky top-[52px] sm:top-[56px] h-[calc(100vh-52px)] sm:h-[calc(100vh-56px)] flex flex-col justify-between py-4 sm:py-6 overflow-hidden bg-[#08090C]">
+        
+        <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
 
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#1E293B]/60">
-          <div>
-            <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] mb-2">
-              <span className={isUV ? 'text-purple-400 font-bold' : 'text-cyan-400 font-bold'}>04</span>
-              <span>/</span>
-              <ScrambleText
-                text="CHRONOLOGICAL SPOTLIGHT ROOM"
-                triggerOnHover
-                className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#1E293B]/60">
+            <div>
+              <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] mb-1.5">
+                <span className={isUV ? 'text-purple-400 font-bold' : 'text-cyan-400 font-bold'}>04</span>
+                <span>/</span>
+                <ScrambleText
+                  text="CHRONOLOGICAL SPOTLIGHT ROOM"
+                  triggerOnHover
+                  className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
+                />
+              </div>
+
+              <RevealTitle
+                text="EXPERIENCE — TRAJECTORY"
+                className="text-2xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white font-sans"
               />
             </div>
 
-            <RevealTitle
-              text="EXPERIENCE — TRAJECTORY"
-              className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-sans"
+            <p className="text-xs sm:text-sm font-mono text-[#94A3B8] max-w-md">
+              Evolusi dari supervisi lini manufaktur industri menuju arsitektur software otonom, rekayasa data relasional, dan otomasi AI.
+            </p>
+          </div>
+
+          {/* Subbar with Interactive Telemetry */}
+          <div className="flex items-center justify-between text-xs font-mono text-[#64748B] py-2">
+            <div className="flex items-center gap-2">
+              <Compass className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span className="hidden sm:inline">SCROLL DOWN TO ADVANCE TIMELINE // CLICK YEAR TO JUMP</span>
+              <span className="sm:hidden">SCROLL / SWIPE TO ADVANCE</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-cyan-400 font-bold">
+                {timelineMilestones[activeMilestoneIndex]?.year} ({activeMilestoneIndex + 1}/{timelineMilestones.length})
+              </span>
+              <span>CHRONOLOGICAL TRACK</span>
+            </div>
+          </div>
+
+          {/* ═════════════════════════════════════════════════════════════
+              SPOTLIGHT ROOM STAGE COMPONENT (Image 3 & 4 Ref)
+              ═════════════════════════════════════════════════════════════ */}
+          <div className="flex-1 flex flex-col justify-center py-2">
+            <SpotlightRoom
+              milestones={timelineMilestones}
+              activeIndex={activeMilestoneIndex}
+              onSelectIndex={handleSelectMilestoneWithScroll}
+              certifications={certifications}
+              onOpenCert={(certId) => setActiveCert(certId)}
+              lightingMode={lightingMode}
             />
           </div>
 
-          <FadeUp delay={0.2}>
-            <p className="text-sm font-mono text-[#94A3B8] max-w-md">
-              Evolusi dari supervisi lini manufaktur industri menuju arsitektur software otonom, rekayasa data relasional, dan otomasi AI.
-            </p>
-          </FadeUp>
-        </div>
+          {/* Bottom Telemetry Scroll Progress Bar */}
+          <div className="pt-2">
+            <div className="w-full h-1 bg-[#141B2B] rounded-full overflow-hidden">
+              <motion.div
+                style={{ scaleX: scrollYProgress }}
+                className={`h-full origin-left ${
+                  isUV
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500'
+                    : 'bg-gradient-to-r from-purple-500 to-cyan-400'
+                }`}
+              />
+            </div>
+          </div>
 
-        {/* ═════════════════════════════════════════════════════════════
-            SPOTLIGHT ROOM STAGE COMPONENT (Image 3 & 4 Ref)
-            ═════════════════════════════════════════════════════════════ */}
-        <div className="pt-2">
-          <SpotlightRoom
-            milestones={timelineMilestones}
-            activeIndex={activeMilestoneIndex}
-            onSelectIndex={(idx) => setActiveMilestoneIndex(idx)}
-            certifications={certifications}
-            onOpenCert={(certId) => setActiveCert(certId)}
-            lightingMode={lightingMode}
-          />
         </div>
 
       </div>

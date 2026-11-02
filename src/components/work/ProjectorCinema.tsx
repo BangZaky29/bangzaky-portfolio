@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ChevronUp, 
@@ -19,6 +19,7 @@ interface ProjectorCinemaProps {
   onSelectIndex: (index: number) => void;
   onOpenCaseStudy: (project: Project) => void;
   lightingMode: LightingMode;
+  direction?: number;
 }
 
 export function ProjectorCinema({
@@ -27,10 +28,19 @@ export function ProjectorCinema({
   onSelectIndex,
   onOpenCaseStudy,
   lightingMode,
+  direction = 1,
 }: ProjectorCinemaProps) {
   const isUV = lightingMode === 'uv';
   const currentProject = projects[activeIndex] || projects[0];
   const touchStartX = useRef<number | null>(null);
+
+  // Auto-scroll active directory item into view
+  useEffect(() => {
+    const el = document.getElementById(`dir-item-${activeIndex}`);
+    if (el) {
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [activeIndex]);
 
   const handlePrev = () => {
     soundEngine.playSlide();
@@ -282,6 +292,7 @@ export function ProjectorCinema({
               return (
                 <button
                   key={proj.id}
+                  id={`dir-item-${idx}`}
                   onClick={() => {
                     soundEngine.playSlide();
                     onSelectIndex(idx);

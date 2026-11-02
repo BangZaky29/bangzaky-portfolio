@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Award, FileText, CheckCircle2, ChevronRight, ExternalLink, Sparkles } from 'lucide-react';
 import { LightingMode, Certification } from '../../types';
@@ -25,6 +25,18 @@ export function SpotlightRoom({
   const isUV = lightingMode === 'uv';
   const current = milestones[activeIndex] || milestones[0];
   const touchStartX = useRef<number | null>(null);
+
+  // Auto-scroll active rail/tab into view
+  useEffect(() => {
+    const el = document.getElementById(`milestone-rail-${activeIndex}`);
+    if (el) {
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    const mobileEl = document.getElementById(`milestone-mobile-${activeIndex}`);
+    if (mobileEl) {
+      mobileEl.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    }
+  }, [activeIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -175,6 +187,7 @@ export function SpotlightRoom({
               return (
                 <button
                   key={m.id}
+                  id={`milestone-rail-${idx}`}
                   onClick={() => {
                     soundEngine.playSlide();
                     onSelectIndex(idx);
@@ -226,6 +239,7 @@ export function SpotlightRoom({
             return (
               <button
                 key={m.id}
+                id={`milestone-mobile-${idx}`}
                 onClick={() => {
                   soundEngine.playSlide();
                   onSelectIndex(idx);
