@@ -122,9 +122,9 @@ export function ProjectorCinema({
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentProject.id}
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: direction * 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
+                exit={{ opacity: 0, y: -direction * 15 }}
                 transition={{ duration: 0.25 }}
                 className="space-y-4"
               >
@@ -197,10 +197,10 @@ export function ProjectorCinema({
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentProject.id}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                initial={{ opacity: 0, y: direction * 18, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -direction * 18, scale: 0.98 }}
+                transition={{ duration: 0.28, ease: 'easeOut' }}
                 className={`relative w-full aspect-[16/10] rounded-xl border overflow-hidden flex flex-col justify-between p-5 sm:p-6 transition-all ${
                   isUV
                     ? 'border-purple-500/40 bg-gradient-to-b from-[#120F26] to-[#0A0817] shadow-[0_0_60px_rgba(168,85,247,0.22)]'
@@ -365,9 +365,9 @@ export function ProjectorCinema({
           <AnimatePresence mode="wait">
             <motion.div
               key={currentProject.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, y: direction * 14, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -direction * 14, scale: 0.97 }}
               transition={{ duration: 0.25 }}
               className={`w-full aspect-[16/10] rounded-xl border p-4 flex flex-col justify-between overflow-hidden relative ${
                 isUV

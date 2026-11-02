@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, X, Compass } from 'lucide-react';
 import { LightingMode } from '../../types';
 import { timelineMilestones } from '../../data/timeline';
@@ -8,7 +8,7 @@ import { certifications } from '../../data/certifications';
 import { ScrambleText, RevealTitle } from '../motion/RevealText';
 import { SpotlightRoom } from '../experience/SpotlightRoom';
 import { soundEngine } from '../../audio/soundEngine';
-import { useAdaptiveLayout } from '../../hooks/useAdaptiveLayout';
+import { smoothScrollTo } from '../motion/SmoothScroll';
 
 interface ExperienceSectionProps {
   lightingMode: LightingMode;
@@ -17,134 +17,235 @@ interface ExperienceSectionProps {
 export function ExperienceSection({ lightingMode }: ExperienceSectionProps) {
   const [activeMilestoneIndex, setActiveMilestoneIndex] = useState<number>(0);
   const [activeCert, setActiveCert] = useState<string | null>(null);
-  const prevIndexRef = useRef<number>(0);
 
-  const { isMobile } = useAdaptiveLayout();
   const sectionRef = useRef<HTMLElement>(null);
+  const lastStepTimeRef = useRef<number>(0);
+  const touchStartYRef = useRef<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
   const isUV = lightingMode === 'uv';
   const selectedCertObj = certifications.find((c) => c.id === activeCert);
 
-  // Pinned scroll-driven track for Experience Spotlight Room
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end end'],
-  });
-
-  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
-    const total = timelineMilestones.length;
-    if (total <= 1) return;
-    const clampedProgress = Math.min(0.9999, Math.max(0, latest));
-    const targetIdx = Math.min(total - 1, Math.floor(clampedProgress * total));
-
-    if (targetIdx !== activeMilestoneIndex) {
-      setActiveMilestoneIndex(targetIdx);
-      if (Math.abs(targetIdx - prevIndexRef.current) === 1) {
-        soundEngine.playSlide();
-      }
-      prevIndexRef.current = targetIdx;
-    }
-  });
-
-  const handleSelectMilestoneWithScroll = (idx: number) => {
+  const handleSelectMilestone = (idx: number) => {
     setActiveMilestoneIndex(idx);
     soundEngine.playSlide();
-    prevIndexRef.current = idx;
-
-    if (sectionRef.current) {
-      const rect = sectionRef.current.getBoundingClientRect();
-      const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
-      const sectionTop = rect.top + currentScrollTop;
-      const totalScrollable = sectionRef.current.offsetHeight - window.innerHeight;
-      if (totalScrollable > 0 && timelineMilestones.length > 1) {
-        const targetScrollY = sectionTop + ((idx + 0.45) / timelineMilestones.length) * totalScrollable;
-        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
-      }
-    }
   };
 
-  // Dynamic scroll height based on milestone count
-  const scrollHeightVh = Math.max(timelineMilestones.length * (isMobile ? 55 : 70), 180);
+  // ═══════════════════════════════════════════════════════════════════
+  // DISCRETE STEPPER: 1 SCROLL DI WEB & 1 USAPAN DI MOBILE = 1 TAHUN KARIER
+  // Mencegah kebablasan dengan cooldown 500ms, transisi tetap halus
+  // ═══════════════════════════════════════════════════════════════════
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    // 1. Desktop Wheel Event Listener
+    const handleWheel = (e: WheelEvent) => {
+      const rect = el.getBoundingClientRect();
+      const isDocked = rect.top <= 120 && rect.bottom >= window.innerHeight * 0.55;
+      if (!isDocked) return;
+
+      const delta = e.deltaY;
+      if (Math.abs(delta) < 18) return;
+
+      const now = Date.now();
+      const timeSinceLast = now - lastStepTimeRef.current;
+
+      if (delta > 0) {
+        // SCROLL KE BAWAH (Next Milestone)
+        if (activeMilestoneIndex < timelineMilestones.length - 1) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (timeSinceLast < 500) return;
+
+          lastStepTimeRef.current = now;
+          soundEngine.playSlide();
+          setActiveMilestoneIndex((prev) => prev + 1);
+        } else {
+          // Di tahun terakhir (2026): scroll berikutnya meluncur mulus ke section Contact
+          if (timeSinceLast > 600) {
+            e.preventDefault();
+            lastStepTimeRef.current = now;
+            smoothScrollTo('#contact', -56);
+          }
+        }
+      } else if (delta < 0) {
+        // SCROLL KE ATAS (Previous Milestone)
+        if (activeMilestoneIndex > 0) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (timeSinceLast < 500) return;
+
+          lastStepTimeRef.current = now;
+          soundEngine.playSlide();
+          setActiveMilestoneIndex((prev) => prev - 1);
+        } else {
+          // Di tahun awal (2022): scroll ke atas meluncur kembali ke section Work
+          if (timeSinceLast > 600) {
+            e.preventDefault();
+            lastStepTimeRef.current = now;
+            smoothScrollTo('#work', -56);
+          }
+        }
+      }
+    };
+
+    // 2. Mobile / Tablet Touch Gestures (1x Usapan = 1 Tahun)
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartYRef.current = e.touches[0].clientY;
+        touchStartXRef.current = e.touches[0].clientX;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (touchStartYRef.current === null || touchStartXRef.current === null) return;
+      const deltaY = touchStartYRef.current - e.touches[0].clientY;
+      const deltaX = touchStartXRef.current - e.touches[0].clientX;
+
+      const rect = el.getBoundingClientRect();
+      const isDocked = rect.top <= 120 && rect.bottom >= window.innerHeight * 0.55;
+
+      if (isDocked && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+        if (deltaY > 0 && activeMilestoneIndex < timelineMilestones.length - 1) {
+          if (e.cancelable) e.preventDefault();
+        } else if (deltaY < 0 && activeMilestoneIndex > 0) {
+          if (e.cancelable) e.preventDefault();
+        }
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (touchStartYRef.current === null) return;
+      const endY = e.changedTouches[0].clientY;
+      const diffY = touchStartYRef.current - endY;
+      touchStartYRef.current = null;
+      touchStartXRef.current = null;
+
+      const rect = el.getBoundingClientRect();
+      const isDocked = rect.top <= 120 && rect.bottom >= window.innerHeight * 0.55;
+      if (!isDocked) return;
+
+      const now = Date.now();
+      if (now - lastStepTimeRef.current < 450) return;
+
+      // Ambang batas usapan (swipe threshold 35px)
+      if (diffY > 35) {
+        // 1x Usapan ke atas = Maju 1 tahun
+        if (activeMilestoneIndex < timelineMilestones.length - 1) {
+          lastStepTimeRef.current = now;
+          soundEngine.playSlide();
+          setActiveMilestoneIndex((prev) => prev + 1);
+        } else {
+          lastStepTimeRef.current = now;
+          smoothScrollTo('#contact', -56);
+        }
+      } else if (diffY < -35) {
+        // 1x Usapan ke bawah = Mundur 1 tahun
+        if (activeMilestoneIndex > 0) {
+          lastStepTimeRef.current = now;
+          soundEngine.playSlide();
+          setActiveMilestoneIndex((prev) => prev - 1);
+        } else {
+          lastStepTimeRef.current = now;
+          smoothScrollTo('#work', -56);
+        }
+      }
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener('wheel', handleWheel);
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchmove', handleTouchMove);
+      el.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [activeMilestoneIndex, timelineMilestones.length]);
+
+  // Persentase kemajuan timeline
+  const progressRatio = (activeMilestoneIndex + 1) / Math.max(1, timelineMilestones.length);
 
   return (
     <section
       id="experience"
       ref={sectionRef}
-      style={{ height: `${scrollHeightVh}vh` }}
-      className="relative border-b border-[#1E2533]"
+      data-lenis-prevent
+      className="relative min-h-[calc(100vh-52px)] sm:min-h-[calc(100vh-56px)] flex flex-col justify-between py-5 sm:py-6 border-b border-[#1E2533] overflow-hidden bg-[#08090C] select-none"
     >
-      {/* ─── Pinned Sticky Spotlight Viewport ─── */}
-      <div className="sticky top-[52px] sm:top-[56px] h-[calc(100vh-52px)] sm:h-[calc(100vh-56px)] flex flex-col justify-between py-4 sm:py-6 overflow-hidden bg-[#08090C]">
-        
-        <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
+      <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
 
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#1E293B]/60">
-            <div>
-              <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] mb-1.5">
-                <span className={isUV ? 'text-purple-400 font-bold' : 'text-cyan-400 font-bold'}>04</span>
-                <span>/</span>
-                <ScrambleText
-                  text="CHRONOLOGICAL SPOTLIGHT ROOM"
-                  triggerOnHover
-                  className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
-                />
-              </div>
-
-              <RevealTitle
-                text="EXPERIENCE — TRAJECTORY"
-                className="text-2xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white font-sans"
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#1E293B]/60 shrink-0">
+          <div>
+            <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] mb-1.5">
+              <span className={isUV ? 'text-purple-400 font-bold' : 'text-cyan-400 font-bold'}>04</span>
+              <span>/</span>
+              <ScrambleText
+                text="CHRONOLOGICAL SPOTLIGHT ROOM"
+                triggerOnHover
+                className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
               />
             </div>
 
-            <p className="text-xs sm:text-sm font-mono text-[#94A3B8] max-w-md">
-              Evolusi dari supervisi lini manufaktur industri menuju arsitektur software otonom, rekayasa data relasional, dan otomasi AI.
-            </p>
-          </div>
-
-          {/* Subbar with Interactive Telemetry */}
-          <div className="flex items-center justify-between text-xs font-mono text-[#64748B] py-2">
-            <div className="flex items-center gap-2">
-              <Compass className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span className="hidden sm:inline">SCROLL DOWN TO ADVANCE TIMELINE // CLICK YEAR TO JUMP</span>
-              <span className="sm:hidden">SCROLL / SWIPE TO ADVANCE</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-cyan-400 font-bold">
-                {timelineMilestones[activeMilestoneIndex]?.year} ({activeMilestoneIndex + 1}/{timelineMilestones.length})
-              </span>
-              <span>CHRONOLOGICAL TRACK</span>
-            </div>
-          </div>
-
-          {/* ═════════════════════════════════════════════════════════════
-              SPOTLIGHT ROOM STAGE COMPONENT (Image 3 & 4 Ref)
-              ═════════════════════════════════════════════════════════════ */}
-          <div className="flex-1 flex flex-col justify-center py-2">
-            <SpotlightRoom
-              milestones={timelineMilestones}
-              activeIndex={activeMilestoneIndex}
-              onSelectIndex={handleSelectMilestoneWithScroll}
-              certifications={certifications}
-              onOpenCert={(certId) => setActiveCert(certId)}
-              lightingMode={lightingMode}
+            <RevealTitle
+              text="EXPERIENCE — TRAJECTORY"
+              className="text-2xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white font-sans"
             />
           </div>
 
-          {/* Bottom Telemetry Scroll Progress Bar */}
-          <div className="pt-2">
-            <div className="w-full h-1 bg-[#141B2B] rounded-full overflow-hidden">
-              <motion.div
-                style={{ scaleX: scrollYProgress }}
-                className={`h-full origin-left ${
-                  isUV
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500'
-                    : 'bg-gradient-to-r from-purple-500 to-cyan-400'
-                }`}
-              />
-            </div>
-          </div>
+          <p className="text-xs sm:text-sm font-mono text-[#94A3B8] max-w-md">
+            Evolusi dari supervisi lini manufaktur industri menuju arsitektur software otonom, rekayasa data relasional, dan otomasi AI.
+          </p>
+        </div>
 
+        {/* Subbar with Discrete Step Telemetry */}
+        <div className="flex items-center justify-between text-xs font-mono text-[#64748B] py-2 shrink-0">
+          <div className="flex items-center gap-2">
+            <Compass className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span className="hidden sm:inline">1X SCROLL = 1 YEAR // CLICK RAIL TO JUMP</span>
+            <span className="sm:hidden">1X USAPAN = 1 YEAR // TOUCH TO CYCLE</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-cyan-400 font-bold">
+              {timelineMilestones[activeMilestoneIndex]?.year} ({activeMilestoneIndex + 1}/{timelineMilestones.length})
+            </span>
+            <span>CHRONOLOGICAL TRACK</span>
+          </div>
+        </div>
+
+        {/* ═════════════════════════════════════════════════════════════
+            SPOTLIGHT ROOM STAGE COMPONENT (Image 3 & 4 Ref)
+            ═════════════════════════════════════════════════════════════ */}
+        <div className="flex-1 flex flex-col justify-center py-2">
+          <SpotlightRoom
+            milestones={timelineMilestones}
+            activeIndex={activeMilestoneIndex}
+            onSelectIndex={handleSelectMilestone}
+            certifications={certifications}
+            onOpenCert={(certId) => setActiveCert(certId)}
+            lightingMode={lightingMode}
+          />
+        </div>
+
+        {/* Bottom Discrete Slide Progress Bar */}
+        <div className="pt-2 shrink-0">
+          <div className="w-full h-1 bg-[#141B2B] rounded-full overflow-hidden">
+            <motion.div
+              animate={{ width: `${progressRatio * 100}%` }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className={`h-full ${
+                isUV
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500'
+                  : 'bg-gradient-to-r from-purple-500 to-cyan-400'
+              }`}
+            />
+          </div>
         </div>
 
       </div>
