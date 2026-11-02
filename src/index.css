@@ -1,19 +1,69 @@
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-arial: Arial, "Helvetica Neue", Helvetica, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-stencil: "Big Shoulders Stencil Display", "Impact", "Arial Black", sans-serif;
-}
-
-.font-stencil {
-  font-family: var(--font-stencil);
-  letter-spacing: 0.04em;
+  --font-stencil: Arial, "Arial Black", "Helvetica Neue", Helvetica, sans-serif;
 }
 
 html {
   color-scheme: dark;
+}
+
+/* ========================================================
+   STANDARISASI TIPOGRAFI UNIVERSAL: FONT ARIAL TEGAS & JELAS
+   H1 SAMPAI PARAGRAF DISAMARATAKAN MENGGUNAKAN ARIAL
+   ======================================================== */
+*, *::before, *::after {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+body {
+  background-color: #08090C;
+  color: #F8FAFC;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+/* Headings H1 s/d H6 — Arial Tegas, Solid, Berkarakter & Jelas */
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+h1 {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+/* Paragraf & Teks Deskripsi — Arial Jelas, Bersih & Nyaman Dibaca */
+p {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif !important;
+  line-height: 1.6;
+}
+
+/* Override font-stencil menjadi Arial Black Solid Tegas (Tanpa Celah Stencil) */
+.font-stencil {
+  font-family: Arial, "Arial Black", "Helvetica Neue", Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Tombol, Form & Input */
+button, input, textarea, select {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+/* Elemen Khusus Telemetri / Kode Monospace */
+.font-mono, [class*="font-mono"] {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace !important;
 }
 
 /* Lenis Smooth Scroll Core Rules */
@@ -36,15 +86,6 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
-}
-
-body {
-  background-color: #08090C;
-  color: #F8FAFC;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: clip;
 }
 
 /* Custom Minimalist Scrollbar */
@@ -83,4 +124,3 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-

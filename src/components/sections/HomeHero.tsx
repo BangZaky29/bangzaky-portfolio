@@ -86,14 +86,14 @@ export function HomeHero({ lightingMode, onNavigate }: HomeHeroProps) {
                 as="h2"
                 text="& AI SYSTEMS ENGINEER"
                 delay={0.15}
-                className="text-[clamp(1.2rem,4vw,2.75rem)] font-light text-[#94A3B8]"
+                className="text-[clamp(1.2rem,4vw,2.75rem)] font-extrabold tracking-tight text-white/90"
               />
             </div>
 
             {/* Paragraph Fade Up */}
             <FadeUp delay={0.25}>
-              <p className="text-sm sm:text-lg text-[#94A3B8] max-w-2xl leading-relaxed">
-                Hi, saya <span className="text-white font-semibold">Zaky Aulia Qolbi</span>. Saya membangun sistem web modern, visual 3D interaktif, aplikasi mobile lintas platform, dan engine automasi berbasis AI untuk membantu bisnis bekerja lebih cepat, presisi, dan efisien.
+              <p className="text-sm sm:text-lg text-[#CBD5E1] max-w-2xl leading-relaxed font-normal">
+                Hi, saya <span className="text-white font-bold">Zaky Aulia Qolbi</span>. Saya membangun sistem web modern, visual 3D interaktif, aplikasi mobile lintas platform, dan engine automasi berbasis AI untuk membantu bisnis bekerja lebih cepat, presisi, dan efisien.
               </p>
             </FadeUp>
 
