@@ -71,7 +71,7 @@ export function HomeHero({ lightingMode, onNavigate }: HomeHeroProps) {
             <div className="space-y-1">
               <h1 className="sr-only">Zaky Aulia Qolbi — Creative Developer & AI Systems Engineer</h1>
               <RevealTitle
-                as="h1"
+                as="div"
                 text="CREATIVE DEVELOPER"
                 highlightWords={['DEVELOPER']}
                 highlightClassName={

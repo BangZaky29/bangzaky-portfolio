@@ -5,7 +5,7 @@ import { LightingMode } from '../../types';
 interface BottomHUDProps {
   lightingMode: LightingMode;
   onToggleLighting: () => void;
-  coordinates: { x: number; y: number };
+  coordinates?: { x: number; y: number };
   scrollPercentage?: number;
   velocity?: number;
 }
@@ -18,11 +18,28 @@ interface BottomHUDProps {
 export function BottomHUD({
   lightingMode,
   onToggleLighting,
-  coordinates,
   scrollPercentage = 0,
   velocity = 0,
 }: BottomHUDProps) {
   const [timeStr, setTimeStr] = useState('');
+  const [coords, setCoords] = useState<{ x: number; y: number }>({ x: -1, y: -1 });
+
+  // Local mouse coordinate tracking throttled by requestAnimationFrame
+  useEffect(() => {
+    let rafId: number;
+    const handlePointerMove = (e: PointerEvent | MouseEvent) => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setCoords({ x: Math.round(e.clientX), y: Math.round(e.clientY) });
+      });
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -65,7 +82,7 @@ export function BottomHUD({
         <div className="hidden sm:flex items-center gap-1">
           <span className="text-[#64748B]">HUD:</span>
           <span className={isUV ? 'text-purple-300 font-bold' : 'text-cyan-300 font-bold'}>
-            {coordinates.x >= 0 ? `${coordinates.x},${coordinates.y}` : '0,0'}
+            {coords.x >= 0 ? `${coords.x},${coords.y}` : '0,0'}
           </span>
         </div>
 

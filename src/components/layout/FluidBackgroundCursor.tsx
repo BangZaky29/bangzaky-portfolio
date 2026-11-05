@@ -10,7 +10,6 @@ interface FluidBackgroundCursorProps {
 
 export function FluidBackgroundCursor({
     lightingMode,
-    onCoordinatesChange,
 }: FluidBackgroundCursorProps) {
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -20,7 +19,7 @@ export function FluidBackgroundCursor({
         return false;
     });
 
-    // Deteksi perangkat mobile & sinkronisasi koordinat mouse untuk HUD Telemetry
+    // Deteksi perangkat mobile
     useEffect(() => {
         const checkMobile = () => {
             const isCoarse = window.matchMedia('(pointer: coarse)').matches;
@@ -30,19 +29,10 @@ export function FluidBackgroundCursor({
         checkMobile();
         window.addEventListener('resize', checkMobile);
 
-        const handlePointerMove = (e: MouseEvent | PointerEvent) => {
-            if (onCoordinatesChange) {
-                onCoordinatesChange({ x: Math.round(e.clientX), y: Math.round(e.clientY) });
-            }
-        };
-
-        window.addEventListener('pointermove', handlePointerMove, { passive: true });
-
         return () => {
             window.removeEventListener('resize', checkMobile);
-            window.removeEventListener('pointermove', handlePointerMove);
         };
-    }, [onCoordinatesChange]);
+    }, []);
 
     const isUV = lightingMode === 'uv';
 

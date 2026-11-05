@@ -81,7 +81,7 @@ interface RevealTitleProps {
   delay?: number;
   highlightWords?: string[];
   highlightClassName?: string;
-  as?: 'h1' | 'h2' | 'h3' | 'h4';
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div' | 'span';
 }
 
 /**

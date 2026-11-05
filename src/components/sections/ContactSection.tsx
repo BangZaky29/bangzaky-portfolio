@@ -106,10 +106,10 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
                 <button
                   onClick={handleCopyEmail}
                   className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-all text-left group cursor-pointer touch-manipulation ${copied
-                      ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300'
-                      : isUV
-                        ? 'bg-[#151026] border-purple-500/40 text-white hover:border-purple-400'
-                        : 'bg-[#121826] border-[#1E293B] text-white hover:border-cyan-400/60'
+                    ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300'
+                    : isUV
+                      ? 'bg-[#151026] border-purple-500/40 text-white hover:border-purple-400'
+                      : 'bg-[#121826] border-[#1E293B] text-white hover:border-cyan-400/60'
                     }`}
                 >
                   <span className="font-mono text-xs sm:text-base font-bold truncate pr-2">
@@ -172,7 +172,7 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
                 className="flex items-center gap-2 p-3.5 rounded-lg bg-[#0D121D] border border-[#1E293B] text-[#94A3B8] hover:text-white hover:border-cyan-500/50 transition-all touch-manipulation"
               >
                 <Instagram className="w-4 h-4 text-pink-400" />
-                <span className="truncate">Instagram @zaky</span>
+                <span className="truncate">Instagram @zaky_aulia_qolbi29</span>
               </a>
 
               <a
@@ -244,8 +244,8 @@ export function ContactSection({ lightingMode, onShowToast }: ContactSectionProp
                 <button
                   type="submit"
                   className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer touch-manipulation active:scale-95 ${isUV
-                      ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]'
-                      : 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_20px_rgba(6,182,212,0.35)]'
+                    ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]'
+                    : 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_20px_rgba(6,182,212,0.35)]'
                     }`}
                 >
                   <Send className="w-4 h-4" />

@@ -18,7 +18,6 @@ import { Toast } from './components/ui/Toast';
 export default function App() {
   const [lightingMode, setLightingMode] = useState<LightingMode>('warm');
   const [activeSection, setActiveSection] = useState<NavSectionId>('home');
-  const [coordinates, setCoordinates] = useState<{ x: number; y: number }>({ x: -1, y: -1 });
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const [velocity, setVelocity] = useState(0);
@@ -121,7 +120,6 @@ export default function App() {
         {/* Interactive UV / Spotlight Lamp Following Cursor */}
         <FluidBackgroundCursor
           lightingMode={lightingMode}
-          onCoordinatesChange={setCoordinates}
         />
 
         {/* Top Navbar with 5 Section Navigation, Mobile Drawer & Realtime Velocity Feedback */}
@@ -172,7 +170,6 @@ export default function App() {
         <BottomHUD
           lightingMode={lightingMode}
           onToggleLighting={handleToggleLighting}
-          coordinates={coordinates}
           scrollPercentage={scrollPercentage}
           velocity={velocity}
         />

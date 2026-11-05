@@ -34,9 +34,6 @@ export function InteractiveCard({
   const rotateX = useSpring(rawX, { stiffness: 150, damping: 20 });
   const rotateY = useSpring(rawY, { stiffness: 150, damping: 20 });
 
-  // Spotlight coordinates
-  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
-
   useEffect(() => {
     setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
   }, []);
@@ -48,7 +45,9 @@ export function InteractiveCard({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setMousePos({ x, y });
+    // Direct CSS variable updates bypass React re-rendering for optimal 60fps performance
+    cardRef.current.style.setProperty('--mouse-x', `${x}px`);
+    cardRef.current.style.setProperty('--mouse-y', `${y}px`);
 
     // Calculate normalized coordinates (-1 to 1)
     const centerX = rect.width / 2;
@@ -69,7 +68,6 @@ export function InteractiveCard({
     setIsHovered(false);
     rawX.set(0);
     rawY.set(0);
-    setMousePos({ x: -100, y: -100 });
   };
 
   const isUV = lightingMode === 'uv';
@@ -94,8 +92,8 @@ export function InteractiveCard({
           className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
           style={{
             background: isUV
-              ? `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(168, 85, 247, 0.15), transparent 70%)`
-              : `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(6, 182, 212, 0.12), transparent 70%)`,
+              ? 'radial-gradient(350px circle at var(--mouse-x, -100px) var(--mouse-y, -100px), rgba(168, 85, 247, 0.15), transparent 70%)'
+              : 'radial-gradient(350px circle at var(--mouse-x, -100px) var(--mouse-y, -100px), rgba(6, 182, 212, 0.12), transparent 70%)',
           }}
         />
       )}
