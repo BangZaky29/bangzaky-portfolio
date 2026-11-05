@@ -878,6 +878,10 @@ function SplashCursor({
 
     const press = (clientX, clientY) => {
       if (!settingsRef.current.clickSplash) return;
+      // Nonaktifkan ledakan animasi asap (burst) pada tampilan mobile
+      if (typeof window !== 'undefined' && (window.innerWidth < 768 || window.matchMedia?.('(pointer: coarse)').matches)) {
+        return;
+      }
       const point = locate(clientX, clientY);
       if (!point) return;
       bursts.push(point);

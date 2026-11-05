@@ -12,7 +12,13 @@ export function FluidBackgroundCursor({
     lightingMode,
     onCoordinatesChange,
 }: FluidBackgroundCursorProps) {
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+            return isCoarse || window.innerWidth < 768;
+        }
+        return false;
+    });
 
     // Deteksi perangkat mobile & sinkronisasi koordinat mouse untuk HUD Telemetry
     useEffect(() => {
@@ -62,7 +68,7 @@ export function FluidBackgroundCursor({
                 shading={0.65}
                 glow={0.3} // Bloom soft khas UI sci-fi React Bits
                 quality={isMobile ? 'low' : 'high'} // Optimasi performa di mobile
-                clickSplash={true}
+                clickSplash={!isMobile} // Hilangkan efek ledakan asap saat klik di tampilan mobile
                 intro={true}
                 contained={false}
                 theme="dark"

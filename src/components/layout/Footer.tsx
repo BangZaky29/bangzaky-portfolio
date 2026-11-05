@@ -32,17 +32,12 @@ export function Footer({ lightingMode }: FooterProps) {
           <span>© 2026 CREATIVE SYSTEMS ARCHITECT</span>
         </div>
 
-        {/* Center */}
-        <div className="text-[11px] text-center text-[#94A3B8]">
-          INSPIRED BY <span className="text-white font-semibold">DIALLO.DIGITAL</span> & ENGINEERED FOR BUSINESS IMPACT
-        </div>
-
         {/* Right: Back to Top */}
         <button
           onClick={scrollToTop}
           className={`flex items-center gap-2 px-3 py-1.5 rounded border transition-all cursor-pointer ${isUV
-              ? 'border-purple-500/40 text-purple-300 hover:bg-purple-950/40'
-              : 'border-[#1E293B] text-[#94A3B8] hover:text-white hover:border-cyan-400/50'
+            ? 'border-purple-500/40 text-purple-300 hover:bg-purple-950/40'
+            : 'border-[#1E293B] text-[#94A3B8] hover:text-white hover:border-cyan-400/50'
             }`}
           title="Back to top"
         >

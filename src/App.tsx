@@ -5,11 +5,13 @@ import { SmoothScroll, smoothScrollTo } from './components/motion/SmoothScroll';
 import { HeaderHUD } from './components/layout/HeaderHUD';
 import { BottomHUD } from './components/layout/BottomHUD';
 import { FluidBackgroundCursor } from './components/layout/FluidBackgroundCursor';
+import { LanyardBadgeHUD } from './components/layout/LanyardBadgeHUD';
 import { Footer } from './components/layout/Footer';
 import { HomeHero } from './components/sections/HomeHero';
 import { CraftSection } from './components/sections/CraftSection';
 import { WorkSection } from './components/sections/WorkSection';
 import { ExperienceSection } from './components/sections/ExperienceSection';
+import { CertificatesFolderSection } from './components/sections/CertificatesFolderSection';
 import { ContactSection } from './components/sections/ContactSection';
 import { Toast } from './components/ui/Toast';
 
@@ -132,6 +134,9 @@ export default function App() {
           onToggleLighting={handleToggleLighting}
         />
 
+        {/* 3D Hanging Lanyard Badge Attached to Navbar on Right (Desktop & Tablet Only) */}
+        <LanyardBadgeHUD lightingMode={lightingMode} />
+
         {/* Main Content Sections */}
         <main className="relative z-10 pb-16 sm:pb-12 w-full max-w-[100vw] overflow-x-clip">
           <HomeHero
@@ -149,6 +154,12 @@ export default function App() {
 
           <ExperienceSection
             lightingMode={lightingMode}
+          />
+
+          {/* 3D Interactive Folder with Official PDF Certificates */}
+          <CertificatesFolderSection
+            lightingMode={lightingMode}
+            onShowToast={showToast}
           />
 
           <ContactSection

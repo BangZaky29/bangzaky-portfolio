@@ -67,26 +67,6 @@ export function SpotlightRoom({
           DESKTOP SPOTLIGHT ROOM LAYOUT (Image 4 Ref)
           ═════════════════════════════════════════════════════════════ */}
       <div className="hidden lg:grid grid-cols-12 gap-8 items-stretch min-h-[520px] relative">
-        
-        {/* UV Secret Wall Graffiti (Easter egg in 365nm UV Mode - Ref Image 4) */}
-        {isUV && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.9 }}
-            exit={{ opacity: 0 }}
-            className="absolute top-12 left-1/2 -translate-x-1/2 text-center pointer-events-none select-none z-0"
-          >
-            <div className="text-purple-400 font-mono text-sm tracking-widest drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">
-              ✦ you found the other light ✦
-            </div>
-            <div className="font-stencil text-5xl font-black text-purple-300/40 uppercase tracking-widest mt-1 drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]">
-              ENGINEER ZAKY
-            </div>
-            <div className="text-purple-400/80 font-mono text-xs tracking-wider mt-1">
-              remembers // precision code &amp; autonomous AI systems
-            </div>
-          </motion.div>
-        )}
 
         {/* ─── 1. LEFT COLUMN: ROLE DETAILS & BULLET POINTS ─── */}
         <div className="col-span-8 flex flex-col justify-between py-2 pr-6 z-10">
@@ -192,13 +172,12 @@ export function SpotlightRoom({
                     soundEngine.playSlide();
                     onSelectIndex(idx);
                   }}
-                  className={`w-full flex items-center justify-between py-2 px-3 rounded-lg text-left transition-all cursor-pointer ${
-                    isActive
+                  className={`w-full flex items-center justify-between py-2 px-3 rounded-lg text-left transition-all cursor-pointer ${isActive
                       ? isUV
                         ? 'bg-purple-950/50 text-white font-bold border-l-2 border-purple-400'
                         : 'bg-cyan-950/40 text-white font-bold border-l-2 border-cyan-400'
                       : 'text-[#64748B] hover:text-[#CBD5E1] hover:bg-[#0E1422]/60'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xs">{isActive ? '■' : '□'}</span>
@@ -244,11 +223,10 @@ export function SpotlightRoom({
                   soundEngine.playSlide();
                   onSelectIndex(idx);
                 }}
-                className={`flex-1 min-w-[72px] py-1.5 px-2 text-center rounded transition-all cursor-pointer ${
-                  isActive
+                className={`flex-1 min-w-[72px] py-1.5 px-2 text-center rounded transition-all cursor-pointer ${isActive
                     ? 'border-t-2 border-cyan-400 bg-cyan-950/30 text-white font-bold'
                     : 'text-[#64748B] hover:text-[#CBD5E1]'
-                }`}
+                  }`}
               >
                 <div className="text-sm font-bold">{m.year}</div>
                 <div className="text-[9px] text-[#94A3B8] truncate">{m.companyShort}</div>
@@ -269,9 +247,8 @@ export function SpotlightRoom({
           >
             {/* Subtle Overhead Spotlight Ambient */}
             <div
-              className={`absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-28 rounded-full blur-2xl pointer-events-none opacity-30 ${
-                isUV ? 'bg-purple-500/25' : 'bg-cyan-400/20'
-              }`}
+              className={`absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-28 rounded-full blur-2xl pointer-events-none opacity-30 ${isUV ? 'bg-purple-500/25' : 'bg-cyan-400/20'
+                }`}
             />
 
             <div className="font-mono text-[11px] text-[#94A3B8]">
