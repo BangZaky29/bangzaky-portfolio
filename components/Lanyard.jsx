@@ -570,24 +570,47 @@ const solvePin = (body, grab, target) => {
 
 const placeHanging = (sim, layout, intro) => {
   const { nodes, previous, velocities, body, anchor } = sim;
+  const isDrop = intro === 'drop';
   nodes[0].copy(anchor);
   for (let i = 1; i <= JOINTS; i++) {
     nodes[i].copy(nodes[i - 1]);
-    if (intro) nodes[i].x += sim.rest;
-    else nodes[i].y -= sim.rest;
+    if (isDrop) {
+      nodes[i].y += sim.rest * 0.45;
+      nodes[i].z += (Math.random() - 0.5) * 0.1;
+    } else if (intro) {
+      nodes[i].x += sim.rest;
+    } else {
+      nodes[i].y -= sim.rest;
+    }
   }
   body.quaternion.identity();
-  if (intro) body.quaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2);
+  if (isDrop) {
+    body.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0.25, 0.4).normalize(), 0.38);
+  } else if (intro) {
+    body.quaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2);
+  }
   body.hang.set(0, layout.hangY, 0);
   const offset = scratch.a.copy(body.hang).applyQuaternion(body.quaternion);
   body.position.copy(nodes[JOINTS]).sub(offset);
   body.previous.copy(body.position);
   body.previousQuaternion.copy(body.quaternion);
-  body.velocity.set(0, 0, 0);
-  body.angular.set(0, 0, 0);
+
+  if (isDrop) {
+    body.velocity.set((Math.random() - 0.5) * 2, -22, 2.5);
+    body.angular.set(2.5, (Math.random() - 0.5) * 3, 1.8);
+    for (let i = 1; i <= JOINTS; i++) {
+      velocities[i].set((Math.random() - 0.5) * 1.5, -16, 0);
+    }
+  } else {
+    body.velocity.set(0, 0, 0);
+    body.angular.set(0, 0, 0);
+    for (let i = 0; i <= JOINTS; i++) {
+      velocities[i].set(0, 0, 0);
+    }
+  }
+
   for (let i = 0; i <= JOINTS; i++) {
     previous[i].copy(nodes[i]);
-    velocities[i].set(0, 0, 0);
   }
   sim.lengths.fill(sim.rest);
   sim.turn = 0;
@@ -722,6 +745,9 @@ const Lanyard = ({
   breeze = 0.5,
   interactive = true,
   intro = true,
+  pointerEventsAuto = false,
+  onPullTrigger = undefined,
+  onPullProgress = undefined,
   className = '',
   style = {}
 }) => {
@@ -749,7 +775,10 @@ const Lanyard = ({
     elasticity,
     breeze,
     interactive,
-    intro
+    intro,
+    pointerEventsAuto,
+    onPullTrigger,
+    onPullProgress
   };
 
   useEffect(() => {
@@ -773,7 +802,7 @@ const Lanyard = ({
     const canvas = renderer.domElement;
     canvas.className = 'lanyard-canvas';
     canvas.setAttribute('aria-hidden', 'true');
-    canvas.style.pointerEvents = 'none';
+    canvas.style.pointerEvents = settingsRef.current.pointerEventsAuto ? 'auto' : 'none';
     container.appendChild(canvas);
 
     const anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
@@ -880,6 +909,7 @@ const Lanyard = ({
     let placed = false;
     let hovering = false;
     let press = null;
+    let dragStartY = 0;
     let imageToken = 0;
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
@@ -960,7 +990,7 @@ const Lanyard = ({
       if (framingKey !== applied.framingKey) {
         frameView();
         if (!placed) {
-          placeHanging(sim, layout, s.intro && !reducedMotion);
+          placeHanging(sim, layout, reducedMotion ? false : s.intro);
           placed = true;
         } else if (layoutKey !== applied.layoutKey) {
           placeHanging(sim, layout, false);
@@ -1202,10 +1232,11 @@ const Lanyard = ({
         target: hit.point.clone()
       };
       press = { x: event.clientX, y: event.clientY, time: performance.now(), point: hit.point.clone() };
+      dragStartY = event.clientY;
       canvas.setPointerCapture?.(event.pointerId);
       canvas.style.pointerEvents = 'auto';
       setCursor('grabbing');
-      event.preventDefault();
+      if (event.cancelable) event.preventDefault();
       start();
     };
 
@@ -1214,25 +1245,40 @@ const Lanyard = ({
       toPointer(event);
       if (sim.grab) {
         if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6) press = null;
+        const deltaY = event.clientY - dragStartY;
+        settingsRef.current.onPullProgress?.(deltaY);
         raycaster.ray.at(sim.grab.reach, sim.grab.target);
         start();
         return;
       }
       if (event.pointerType === 'touch') return;
       hovering = !!pickCard();
-      canvas.style.pointerEvents = hovering ? 'auto' : 'none';
+      if (!settingsRef.current.pointerEventsAuto) {
+        canvas.style.pointerEvents = hovering ? 'auto' : 'none';
+      } else {
+        canvas.style.pointerEvents = 'auto';
+      }
       setCursor(hovering ? 'grab' : '');
     };
 
     const onPointerUp = event => {
       if (!sim.grab) return;
+      const pulledDown = event.clientY - dragStartY;
+      if (pulledDown > 65) {
+        settingsRef.current.onPullTrigger?.();
+      }
+      settingsRef.current.onPullProgress?.(0);
       sim.grab = null;
       if (press && event.type === 'pointerup' && performance.now() - press.time < 450) flip(press.point);
       press = null;
       canvas.releasePointerCapture?.(event.pointerId);
       toPointer(event);
       hovering = !!pickCard();
-      canvas.style.pointerEvents = hovering ? 'auto' : 'none';
+      if (!settingsRef.current.pointerEventsAuto) {
+        canvas.style.pointerEvents = hovering ? 'auto' : 'none';
+      } else {
+        canvas.style.pointerEvents = 'auto';
+      }
       setCursor(hovering && event.pointerType !== 'touch' ? 'grab' : '');
       start();
     };
@@ -1242,7 +1288,7 @@ const Lanyard = ({
       toPointer(event.touches[0]);
       if (pickCard()) {
         canvas.style.pointerEvents = 'auto';
-        event.preventDefault();
+        if (event.cancelable) event.preventDefault();
       }
     };
 
@@ -1252,7 +1298,11 @@ const Lanyard = ({
       if (sim.grab) return;
       toPointer(event);
       hovering = !!pickCard();
-      canvas.style.pointerEvents = hovering ? 'auto' : 'none';
+      if (!settingsRef.current.pointerEventsAuto) {
+        canvas.style.pointerEvents = hovering ? 'auto' : 'none';
+      } else {
+        canvas.style.pointerEvents = 'auto';
+      }
       setCursor(hovering ? 'grab' : '');
     };
 

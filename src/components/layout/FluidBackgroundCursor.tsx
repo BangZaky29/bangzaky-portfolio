@@ -6,10 +6,12 @@ import { LightingMode } from '../../types';
 interface FluidBackgroundCursorProps {
     lightingMode: LightingMode;
     onCoordinatesChange?: (coords: { x: number; y: number }) => void;
+    zIndex?: number;
 }
 
 export function FluidBackgroundCursor({
     lightingMode,
+    zIndex = 0,
 }: FluidBackgroundCursorProps) {
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -44,7 +46,11 @@ export function FluidBackgroundCursor({
         : ['#06B6D4', '#3B82F6', '#10B981', '#F59E0B'];
 
     return (
-        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div
+            className="pointer-events-none fixed inset-0 overflow-hidden"
+            style={{ zIndex }}
+            aria-hidden="true"
+        >
             <SplashCursor
                 colors={palette}
                 rainbow={false} // Menggunakan palet cyberpunk terkurasi (bukan pelangi mentah)

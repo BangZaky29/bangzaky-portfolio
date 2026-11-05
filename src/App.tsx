@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useScroll, useVelocity, useSpring, useMotionValueEvent } from 'motion/react';
+import { useScroll, useVelocity, useSpring, useMotionValueEvent, AnimatePresence } from 'motion/react';
 import { LightingMode, NavSectionId } from './types';
 import { SmoothScroll, smoothScrollTo } from './components/motion/SmoothScroll';
 import { HeaderHUD } from './components/layout/HeaderHUD';
 import { BottomHUD } from './components/layout/BottomHUD';
 import { FluidBackgroundCursor } from './components/layout/FluidBackgroundCursor';
 import { LanyardBadgeHUD } from './components/layout/LanyardBadgeHUD';
+import { SilkCurtainIntro } from './components/layout/SilkCurtainIntro';
 import { Footer } from './components/layout/Footer';
 import { HomeHero } from './components/sections/HomeHero';
 import { CraftSection } from './components/sections/CraftSection';
@@ -16,6 +17,7 @@ import { ContactSection } from './components/sections/ContactSection';
 import { Toast } from './components/ui/Toast';
 
 export default function App() {
+  const [isCurtainOpen, setIsCurtainOpen] = useState(false);
   const [lightingMode, setLightingMode] = useState<LightingMode>('warm');
   const [activeSection, setActiveSection] = useState<NavSectionId>('home');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -117,10 +119,22 @@ export default function App() {
         className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-500/30 selection:text-white ${isUV ? 'bg-[#090812] text-[#F3F4F6]' : 'bg-[#08090C] text-[#F8FAFC]'
           }`}
       >
-        {/* Interactive UV / Spotlight Lamp Following Cursor */}
-        <FluidBackgroundCursor
-          lightingMode={lightingMode}
-        />
+        {/* Interactive UV / Spotlight Lamp Following Cursor (Website Main Background) */}
+        {isCurtainOpen && (
+          <FluidBackgroundCursor
+            lightingMode={lightingMode}
+          />
+        )}
+
+        {/* Theatrical Silk Curtain Intro with Center Master Key Lanyard */}
+        <AnimatePresence>
+          {!isCurtainOpen && (
+            <SilkCurtainIntro
+              lightingMode={lightingMode}
+              onCurtainOpened={() => setIsCurtainOpen(true)}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Top Navbar with 5 Section Navigation, Mobile Drawer & Realtime Velocity Feedback */}
         <HeaderHUD
@@ -132,8 +146,10 @@ export default function App() {
           onToggleLighting={handleToggleLighting}
         />
 
-        {/* 3D Hanging Lanyard Badge Attached to Navbar on Right (Desktop & Tablet Only) */}
-        <LanyardBadgeHUD lightingMode={lightingMode} />
+        {/* 3D Hanging Lanyard Badge Attached to Navbar on Right (Desktop & Tablet Only - Never on Mobile) */}
+        {isCurtainOpen && (
+          <LanyardBadgeHUD lightingMode={lightingMode} />
+        )}
 
         {/* Main Content Sections */}
         <main className="relative z-10 pb-16 sm:pb-12 w-full max-w-[100vw] overflow-x-clip">

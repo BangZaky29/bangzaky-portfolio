@@ -1,8 +1,10 @@
 // C:\codingVibes\myPortfolio\bangzaky-portfolio\src\components\layout\LanyardBadgeHUD.tsx
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import Lanyard from '@/components/Lanyard.jsx';
 import { LightingMode } from '../../types';
 import { generateBadgeTextures } from '../../utils/badgeTextureGenerator';
+import { soundEngine } from '../../audio/soundEngine';
 
 interface LanyardBadgeHUDProps {
   lightingMode: LightingMode;
@@ -17,6 +19,7 @@ export function LanyardBadgeHUD({ lightingMode }: LanyardBadgeHUDProps) {
   // 1. Deteksi breakpoint viewport: Mobile (<768px) NOT AVAILABLE
   useEffect(() => {
     setMounted(true);
+    soundEngine.playLanyardBounce();
 
     const updateDimensions = () => {
       const width = window.innerWidth;
@@ -63,7 +66,16 @@ export function LanyardBadgeHUD({ lightingMode }: LanyardBadgeHUDProps) {
   const isUV = lightingMode === 'uv';
 
   return (
-    <aside
+    <motion.aside
+      initial={{ y: -480, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{
+        type: 'spring',
+        stiffness: 150,
+        damping: 11, // Damping rendah = efek membal kenyal (overshoot bounce)!
+        mass: 1.1,
+        delay: 0.1,
+      }}
       className="fixed inset-0 z-30 pointer-events-none select-none w-screen h-screen overflow-hidden"
       aria-label="Interactive 3D Identity Badge"
     >
@@ -81,14 +93,14 @@ export function LanyardBadgeHUD({ lightingMode }: LanyardBadgeHUDProps) {
         strapImage={undefined}
         strapLength={0.32}
         strapWidth={0.58}
-        gravity={1.15}
-        elasticity={0.45}
-        damping={0.55}
+        gravity={1.25}
+        elasticity={0.65}
+        damping={0.42}
         breeze={0.35}
         interactive={true}
-        intro={true}
+        intro="drop"
         className="w-full h-full"
       />
-    </aside>
+    </motion.aside>
   );
 }
