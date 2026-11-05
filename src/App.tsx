@@ -4,7 +4,7 @@ import { LightingMode, NavSectionId } from './types';
 import { SmoothScroll, smoothScrollTo } from './components/motion/SmoothScroll';
 import { HeaderHUD } from './components/layout/HeaderHUD';
 import { BottomHUD } from './components/layout/BottomHUD';
-import { UVLightCursor } from './components/layout/UVLightCursor';
+import { FluidBackgroundCursor } from './components/layout/FluidBackgroundCursor';
 import { Footer } from './components/layout/Footer';
 import { HomeHero } from './components/sections/HomeHero';
 import { CraftSection } from './components/sections/CraftSection';
@@ -113,12 +113,11 @@ export default function App() {
   return (
     <SmoothScroll>
       <div
-        className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-500/30 selection:text-white ${
-          isUV ? 'bg-[#090812] text-[#F3F4F6]' : 'bg-[#08090C] text-[#F8FAFC]'
-        }`}
+        className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-500/30 selection:text-white ${isUV ? 'bg-[#090812] text-[#F3F4F6]' : 'bg-[#08090C] text-[#F8FAFC]'
+          }`}
       >
         {/* Interactive UV / Spotlight Lamp Following Cursor */}
-        <UVLightCursor
+        <FluidBackgroundCursor
           lightingMode={lightingMode}
           onCoordinatesChange={setCoordinates}
         />

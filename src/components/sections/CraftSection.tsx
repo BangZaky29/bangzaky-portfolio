@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Globe, 
-  Smartphone, 
-  Cpu, 
-  Server, 
-  LayoutDashboard, 
-  MessageSquare, 
-  CreditCard, 
-  TrendingUp, 
+import {
+  Globe,
+  Smartphone,
+  Cpu,
+  Server,
+  LayoutDashboard,
+  MessageSquare,
+  CreditCard,
+  TrendingUp,
   FileText,
-  CheckCircle2,
-  Terminal
+  Terminal,
+  Play,
+  RotateCcw
 } from 'lucide-react';
 import { LightingMode } from '../../types';
 import { craftPillars, whatICanBuildServices } from '../../data/craft';
@@ -38,12 +39,20 @@ const pillarIcons = [Globe, Smartphone, Cpu, Server];
 
 export function CraftSection({ lightingMode }: CraftSectionProps) {
   const [selectedTechCategory, setSelectedTechCategory] = useState<string>('all');
+  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
   const isUV = lightingMode === 'uv';
+
+  const toggleFlip = (id: string) => {
+    setFlippedCards((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   return (
     <section id="craft" className="py-20 border-b border-[#1E2533] overflow-hidden">
       <div className="w-full max-w-7xl xl:max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-8 space-y-16">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#1E293B]/60">
           <div>
@@ -56,7 +65,7 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
                 className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
               />
             </div>
-            
+
             <RevealTitle
               text="CRAFT — WHAT I DO"
               className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white"
@@ -70,10 +79,12 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
           </FadeUp>
         </div>
 
-        {/* 4 Core Pillars Grid with InteractiveCard 3D Tilt & Cursor Spotlight */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* 4 Core Pillars Grid (3D Card Flip Animation) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {craftPillars.map((pillar, idx) => {
             const Icon = pillarIcons[idx % pillarIcons.length];
+            const isFlipped = !!flippedCards[pillar.id];
+
             return (
               <motion.div
                 key={pillar.id}
@@ -86,56 +97,174 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
                   damping: 18,
                   delay: idx * 0.08,
                 }}
+                className="w-full [perspective:1200px]"
               >
-                <InteractiveCard
-                  lightingMode={lightingMode}
-                  className={`p-5 sm:p-8 rounded-xl bg-[#0D121D]/90 border transition-all duration-300 h-full flex flex-col justify-between group ${
-                    isUV
-                      ? 'border-[#271E3D] hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.18)]'
-                      : 'border-[#1E293B] hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]'
-                  }`}
+                {/* 3D Flipping Card Container */}
+                <motion.div
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                  transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                  whileHover={{ scale: isFlipped ? 1 : 1.015 }}
+                  onClick={() => toggleFlip(pillar.id)}
+                  className="relative w-full h-[460px] sm:h-[440px] select-none cursor-pointer rounded-2xl"
                 >
-                  <div>
-                    {/* Index tag */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-2.5 rounded-lg bg-[#141B2B] border border-[#1E293B] text-white">
-                        <Icon className={`w-5 h-5 ${isUV ? 'text-purple-400' : 'text-cyan-400'}`} />
+                  {/* ========================================================
+                      SISI DEPAN (FRONT FACE - SEPERTI SCREENSHOT 2)
+                     ======================================================== */}
+                  <div
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
+                    className={`absolute inset-0 w-full h-full rounded-2xl bg-[#0D121D]/95 border p-6 sm:p-8 flex flex-col justify-between overflow-hidden shadow-xl transition-all duration-300 group ${isUV
+                        ? 'border-[#271E3D] hover:border-purple-500/60 hover:shadow-[0_0_35px_rgba(168,85,247,0.2)]'
+                        : 'border-[#1E293B] hover:border-cyan-500/60 hover:shadow-[0_0_35px_rgba(6,182,212,0.18)]'
+                      }`}
+                  >
+                    {/* Ambient Radial Gradient Glow */}
+                    <div
+                      className={`absolute inset-0 opacity-15 pointer-events-none transition-opacity duration-300 group-hover:opacity-30 ${isUV
+                          ? 'bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.45),transparent_70%)]'
+                          : 'bg-[radial-gradient(ellipse_at_top_right,rgba(6,182,212,0.4),transparent_70%)]'
+                        }`}
+                    />
+
+                    {/* Top Bar: Icon + Index */}
+                    <div className="flex items-center justify-between relative z-10">
+                      <div className="p-3 rounded-xl bg-[#141B2B] border border-[#1E293B] text-white shadow-inner group-hover:border-cyan-400/40 transition-colors">
+                        <Icon className={`w-6 h-6 ${isUV ? 'text-purple-400' : 'text-cyan-400'}`} />
                       </div>
-                      <span className="font-mono text-xs text-[#64748B] tracking-wider">
+                      <span className="font-mono text-xs text-[#64748B] tracking-widest uppercase">
                         {pillar.index} // ARCH
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-sm text-[#94A3B8] mb-6 leading-relaxed">
-                      {pillar.description}
-                    </p>
+                    {/* Watermark Icon Besar di Latar Belakang */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none group-hover:opacity-10 group-hover:scale-110 transition-all duration-500">
+                      <Icon className="w-52 h-52 text-white" />
+                    </div>
 
-                    {/* Capabilities list */}
-                    <div className="space-y-2 mb-6 font-mono text-xs">
-                      {pillar.capabilities.map((cap, cIdx) => (
-                        <div key={cIdx} className="flex items-center gap-2 text-[#CBD5E1]">
-                          <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isUV ? 'text-purple-400' : 'text-cyan-400'}`} />
-                          <span>{cap}</span>
+                    {/* Bottom: Judul, Subtitle & Tombol Putih Khas Player */}
+                    <div className="relative z-10">
+                      <div className="flex items-end justify-between gap-4">
+                        <div className="space-y-1.5 max-w-[70%]">
+                          <h3 className={`text-xl sm:text-2xl font-bold text-white transition-colors tracking-tight ${isUV ? 'group-hover:text-purple-300' : 'group-hover:text-cyan-300'
+                            }`}>
+                            {pillar.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-[#94A3B8] font-mono line-clamp-2">
+                            {pillar.shortDesc}
+                          </p>
                         </div>
-                      ))}
+
+                        {/* Floating Pill Label + Tombol Bulat Putih */}
+                        <div className="flex items-center gap-2.5 shrink-0">
+                          <span className="hidden sm:inline-block px-3 py-1 rounded-md bg-white text-black font-semibold text-[11px] font-mono shadow-md whitespace-nowrap">
+                            {pillar.title.split(' ')[0]} — Details
+                          </span>
+                          <div className="w-11 h-11 rounded-full bg-white text-black flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-cyan-400 transition-all duration-200">
+                            <Play className="w-4 h-4 fill-black translate-x-0.5" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Tech Tags */}
-                  <div className="flex flex-wrap gap-1.5 pt-4 border-t border-[#1E293B]/60">
-                    {pillar.tags.map((tag, tIdx) => (
-                      <span
-                        key={tIdx}
-                        className="px-2 py-0.5 rounded text-[11px] font-mono bg-[#141B2B] text-[#94A3B8] border border-[#1E293B]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  {/* ========================================================
+                      SISI BELAKANG (BACK FACE - SEPERTI SCREENSHOT 3)
+                     ======================================================== */}
+                  <div
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                    }}
+                    className={`absolute inset-0 w-full h-full rounded-2xl bg-[#0D121D]/98 border p-6 sm:p-7 flex flex-col justify-between overflow-hidden shadow-2xl transition-colors duration-300 ${isUV
+                        ? 'border-purple-500/50 shadow-[0_0_35px_rgba(168,85,247,0.22)]'
+                        : 'border-cyan-500/50 shadow-[0_0_35px_rgba(6,182,212,0.2)]'
+                      }`}
+                  >
+                    {/* Header Mini: Thumbnail Icon + Judul + Tombol Flip Balik */}
+                    <div>
+                      <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#1E293B]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-[#141B2B] border border-[#1E293B] flex items-center justify-center shrink-0 shadow-inner">
+                            <Icon className={`w-5 h-5 ${isUV ? 'text-purple-400' : 'text-cyan-400'}`} />
+                          </div>
+                          <div>
+                            <h3 className="text-sm sm:text-base font-bold text-white tracking-tight leading-snug">
+                              {pillar.title}
+                            </h3>
+                            <p className="font-mono text-[11px] text-[#64748B]">
+                              {pillar.index} // ARCH · {pillar.capabilities.length} capabilities
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Tombol Flip Kembali */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFlip(pillar.id);
+                          }}
+                          className="p-1.5 rounded-lg bg-[#141B2B] hover:bg-[#1E293B] border border-[#1E293B] text-[#94A3B8] hover:text-white transition-colors cursor-pointer shrink-0"
+                          title="Balik ke depan"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Paragraf Deskripsi */}
+                      <p className="text-xs sm:text-[13px] text-[#94A3B8] leading-relaxed pt-2.5 pb-2 line-clamp-3">
+                        {pillar.description}
+                      </p>
+
+                      {/* Tracklist Bernomor 1, 2, 3, 4 (Persis Screenshot 3) */}
+                      <div className="space-y-1">
+                        {pillar.capabilities.map((cap, cIdx) => (
+                          <div
+                            key={cIdx}
+                            className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-[#141B2B]/80 transition-colors group/item"
+                          >
+                            <div className="flex items-center gap-3 text-xs text-[#CBD5E1]">
+                              <span className="font-mono text-xs text-[#64748B] w-4 text-right">
+                                {cIdx + 1}
+                              </span>
+                              <span className="group-hover/item:text-white transition-colors font-medium line-clamp-1">
+                                {cap}
+                              </span>
+                            </div>
+                            <span className="font-mono text-[10px] text-[#64748B] uppercase tracking-wider shrink-0 ml-2">
+                              ARCH
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Bottom: Tags Tech Stack & Floating Pill */}
+                    <div className="pt-2 border-t border-[#1E293B]/60 space-y-2">
+                      <div className="flex flex-wrap gap-1.5">
+                        {pillar.tags.slice(0, 5).map((tag, tIdx) => (
+                          <span
+                            key={tIdx}
+                            className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#141B2B] text-[#94A3B8] border border-[#1E293B]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex justify-end pt-1">
+                        <span className="px-3 py-1 rounded-md bg-white text-black font-semibold text-[11px] font-mono shadow-md inline-flex items-center gap-1.5">
+                          <RotateCcw className="w-3 h-3" />
+                          <span>{pillar.title.split(' ')[0]} — Flip Back</span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </InteractiveCard>
+                </motion.div>
               </motion.div>
             );
           })}
@@ -187,15 +316,14 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
               <h3 className="text-2xl font-bold text-white">Verified Stack & Proficiencies</h3>
             </div>
 
-            {/* Filter Categories (Fluid Horizontally Scrollable on Mobile) */}
+            {/* Filter Categories */}
             <div className="flex items-center gap-1.5 p-1 bg-[#0F1420] border border-[#1E293B] rounded-lg overflow-x-auto no-scrollbar whitespace-nowrap max-w-full">
               <button
                 onClick={() => setSelectedTechCategory('all')}
-                className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation shrink-0 ${
-                  selectedTechCategory === 'all'
+                className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation shrink-0 ${selectedTechCategory === 'all'
                     ? isUV ? 'bg-purple-600 text-white font-semibold' : 'bg-cyan-500 text-black font-semibold'
                     : 'text-[#94A3B8] hover:text-white'
-                }`}
+                  }`}
               >
                 All
               </button>
@@ -203,11 +331,10 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
                 <button
                   key={cat.id}
                   onClick={() => setSelectedTechCategory(cat.id)}
-                  className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation shrink-0 ${
-                    selectedTechCategory === cat.id
+                  className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer touch-manipulation shrink-0 ${selectedTechCategory === cat.id
                       ? isUV ? 'bg-purple-600 text-white font-semibold' : 'bg-cyan-500 text-black font-semibold'
                       : 'text-[#94A3B8] hover:text-white'
-                  }`}
+                    }`}
                 >
                   {cat.title}
                 </button>
@@ -215,7 +342,7 @@ export function CraftSection({ lightingMode }: CraftSectionProps) {
             </div>
           </div>
 
-          {/* Tech Stack Cards with Layout Animations */}
+          {/* Tech Stack Cards */}
           <motion.div
             layout
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"

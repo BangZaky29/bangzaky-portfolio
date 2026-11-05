@@ -205,10 +205,10 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
       id="work"
       ref={sectionRef}
       data-lenis-prevent
-      className="relative min-h-[calc(100vh-52px)] sm:min-h-[calc(100vh-56px)] flex flex-col justify-between py-5 sm:py-6 border-b border-[#1E2533] overflow-hidden bg-[#08090C] select-none"
+      className="relative min-h-[calc(100vh-52px)] sm:min-h-[calc(100vh-56px)] flex flex-col justify-between py-5 sm:py-6 border-b border-[#1E2533] overflow-hidden select-none"
     >
       <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#1E293B]/60 shrink-0">
           <div>
@@ -221,7 +221,7 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
                 className={isUV ? 'text-purple-300' : 'text-[#94A3B8]'}
               />
             </div>
-            
+
             <RevealTitle
               text="WORK — PRODUCTION & CODE"
               className="text-2xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white font-sans"
@@ -234,23 +234,21 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
               <button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
-                className={`relative px-3 py-1.5 rounded-lg transition-all cursor-pointer touch-manipulation shrink-0 ${
-                  activeCategory === cat.id
+                className={`relative px-3 py-1.5 rounded-lg transition-all cursor-pointer touch-manipulation shrink-0 ${activeCategory === cat.id
                     ? isUV
                       ? 'text-white font-bold'
                       : 'text-black font-bold'
                     : 'text-[#94A3B8] hover:text-white'
-                }`}
+                  }`}
               >
                 {activeCategory === cat.id && (
                   <motion.div
                     layoutId="activeWorkCategoryPill"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    className={`absolute inset-0 rounded-lg ${
-                      isUV
+                    className={`absolute inset-0 rounded-lg ${isUV
                         ? 'bg-purple-600 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
                         : 'bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                    }`}
+                      }`}
                   />
                 )}
                 <span className="relative z-10">{cat.label} ({cat.count})</span>
@@ -294,11 +292,10 @@ export function WorkSection({ lightingMode }: WorkSectionProps) {
             <motion.div
               animate={{ width: `${progressRatio * 100}%` }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className={`h-full ${
-                isUV
+              className={`h-full ${isUV
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500'
                   : 'bg-gradient-to-r from-cyan-400 to-amber-300'
-              }`}
+                }`}
             />
           </div>
         </div>

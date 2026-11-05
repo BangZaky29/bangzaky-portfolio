@@ -176,7 +176,7 @@ export function ExperienceSection({ lightingMode }: ExperienceSectionProps) {
       id="experience"
       ref={sectionRef}
       data-lenis-prevent
-      className="relative min-h-[calc(100vh-52px)] sm:min-h-[calc(100vh-56px)] flex flex-col justify-between py-5 sm:py-6 border-b border-[#1E2533] overflow-hidden bg-[#08090C] select-none"
+      className="relative min-h-[calc(100vh-52px)] sm:min-h-[calc(100vh-56px)] flex flex-col justify-between py-5 sm:py-6 border-b border-[#1E2533] overflow-hidden select-none"
     >
       <div className="w-full max-w-[1480px] 2xl:max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
 
@@ -239,11 +239,10 @@ export function ExperienceSection({ lightingMode }: ExperienceSectionProps) {
             <motion.div
               animate={{ width: `${progressRatio * 100}%` }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className={`h-full ${
-                isUV
+              className={`h-full ${isUV
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500'
                   : 'bg-gradient-to-r from-purple-500 to-cyan-400'
-              }`}
+                }`}
             />
           </div>
         </div>
